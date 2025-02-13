@@ -3,11 +3,9 @@ package commerce.shop.domain.product;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.global.jpa.DateTimeAuditEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
 @Builder
 @Entity
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
