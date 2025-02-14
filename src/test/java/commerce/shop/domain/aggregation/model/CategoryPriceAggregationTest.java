@@ -3,18 +3,18 @@ package commerce.shop.domain.aggregation.model;
 import static org.assertj.core.api.BDDAssertions.then;
 
 import commerce.shop.domain.product.Category;
-import java.util.Map;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class CategoryPriceAggregationTest {
 
-    private Map<Category, PriceInformation> pricesByCategory = Map.of(
-            Category.TOP, new PriceInformation(1L, 10000),
-            Category.OUTER, new PriceInformation(2L, 5000),
-            Category.PANTS, new PriceInformation(3L, 3000)
+    private final List<ProductPrice> prices = List.of(
+            new ProductPrice(1L, Category.TOP, 10000),
+            new ProductPrice(2L, Category.OUTER, 5000),
+            new ProductPrice(3L, Category.PANTS, 3000)
     );
 
-    private CategoryPriceAggregation aggregation = new CategoryPriceAggregation(pricesByCategory);
+    private final CategoryPriceAggregation aggregation = new CategoryPriceAggregation(prices);
 
     @Test
     void calculateTotalPriceTest() {
