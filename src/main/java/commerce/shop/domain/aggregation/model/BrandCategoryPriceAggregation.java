@@ -17,7 +17,7 @@ public class BrandCategoryPriceAggregation {
         }
 
         this.brandCategoryPrices = prices.stream()
-                .collect(Collectors.groupingBy(ProductPrice::branId));
+                .collect(Collectors.groupingBy(ProductPrice::brandId));
     }
 
     public int minimumTotalPriceOf(long brandId) {

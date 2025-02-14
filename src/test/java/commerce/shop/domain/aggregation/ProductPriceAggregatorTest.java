@@ -6,6 +6,7 @@ import commerce.shop.domain.aggregation.model.BrandCategoryPriceAggregation;
 import commerce.shop.domain.aggregation.model.CategoryPriceAggregation;
 import commerce.shop.domain.aggregation.model.ProductPrice;
 import commerce.shop.domain.product.Category;
+import commerce.shop.domain.product.PriceType;
 import commerce.shop.domain.product.ProductPriceSummary;
 import java.util.Collections;
 import java.util.List;
@@ -21,56 +22,46 @@ class ProductPriceAggregatorTest {
     private ProductPriceAggregator aggregator;
 
     @Test
-    @DisplayName("각 카테고리 별 최저가와 해당 브랜드를 찾는다")
-    void aggregateMinimumPricesOfCategoryTest() {
+    @DisplayName("각 카테고리 별 최소 / 최대 가격과 해당 브랜드를 찾는다")
+    void aggregatePricesOfCategoryTest() {
         // given
-        long outerMinimPriceBrandId = 1L;
+        long outerMinimumPriceBrandId = 1L;
         int outerMinimumPrice = 5000;
+
+        long outerMaximumBrandId = 2L;
+        int outerMaximumPrice = 25000;
 
         long topMinimumPriceBrandId = 2L;
         int topMinimumPrice = 8000;
 
+        long topMaximumPriceBrandId = 1L;
+        int topMaximumPrice = 12000;
+
         List<ProductPriceSummary> prices = List.of(
-                new ProductPriceSummary(Category.TOP, 1L, 10000, 12000),
-                new ProductPriceSummary(Category.TOP, topMinimumPriceBrandId, topMinimumPrice, 9000),
-                new ProductPriceSummary(Category.OUTER, outerMinimPriceBrandId, outerMinimumPrice, 25000),
-                new ProductPriceSummary(Category.OUTER, 2L, 6000, 24000)
+                new ProductPriceSummary(Category.TOP, topMaximumPriceBrandId, topMinimumPrice + 1, topMaximumPrice),
+                new ProductPriceSummary(Category.TOP, topMinimumPriceBrandId, topMinimumPrice, topMaximumPrice - 1),
+                new ProductPriceSummary(Category.OUTER, outerMinimumPriceBrandId, outerMinimumPrice, outerMaximumPrice - 1),
+                new ProductPriceSummary(Category.OUTER, outerMaximumBrandId, outerMinimumPrice + 1, outerMaximumPrice)
         );
 
         // when
-        CategoryPriceAggregation result = aggregator.aggregateMinimumPricesOfCategory(prices);
+        CategoryPriceAggregation aggregation = aggregator.aggregatePricesOfCategory(prices);
 
         // then
-        ProductPrice topPrice = result.priceFor(Category.TOP).orElseThrow();
-        ProductPrice outerPrice = result.priceFor(Category.OUTER).orElseThrow();
+        ProductPrice topProductMinimumPrice = aggregation.priceOf(Category.TOP, PriceType.MINIMUM_PRICE).orElseThrow();
+        ProductPrice topProductMaximumPrice = aggregation.priceOf(Category.TOP, PriceType.MAXIMUM_PRICE).orElseThrow();
+        ProductPrice outerProductMinimumPrice = aggregation.priceOf(Category.OUTER, PriceType.MINIMUM_PRICE).orElseThrow();
+        ProductPrice outerProductMaximumPrice = aggregation.priceOf(Category.OUTER, PriceType.MAXIMUM_PRICE).orElseThrow();
 
-        then(topPrice.branId()).isEqualTo(topMinimumPriceBrandId);
-        then(topPrice.price()).isEqualTo(topMinimumPrice);
-        then(outerPrice.branId()).isEqualTo(outerMinimPriceBrandId);
-        then(outerPrice.price()).isEqualTo(outerMinimumPrice);
-    }
+        then(topProductMinimumPrice.brandId()).isEqualTo(topMinimumPriceBrandId);
+        then(topProductMinimumPrice.price()).isEqualTo(topMinimumPrice);
+        then(topProductMaximumPrice.brandId()).isEqualTo(topMaximumPriceBrandId);
+        then(topProductMaximumPrice.price()).isEqualTo(topMaximumPrice);
 
-    @Test
-    @DisplayName("모든 카테고리를 가진 브랜드의 최소 가격을 집계한다")
-    void aggregateMinimumPricesForBrandWithAllCategoriesTest() {
-        // given
-        long brandId = 1L;
-        List<ProductPriceSummary> productPrices = List.of(
-                new ProductPriceSummary(Category.TOP, brandId, 10000, 12000),
-                new ProductPriceSummary(Category.OUTER, brandId, 5000, 7000),
-                new ProductPriceSummary(Category.PANTS, brandId, 3000, 4000),
-                new ProductPriceSummary(Category.SNEAKERS, brandId, 9000, 11000),
-                new ProductPriceSummary(Category.BAG, brandId, 2000, 3000),
-                new ProductPriceSummary(Category.CAP, brandId, 1500, 2500),
-                new ProductPriceSummary(Category.SOCKS, brandId, 1000, 1500),
-                new ProductPriceSummary(Category.ACCESSORIES, brandId, 2000, 3000)
-        );
-
-        // when
-        BrandCategoryPriceAggregation result = aggregator.aggregateBrandCategoryMinimumPrices(productPrices);
-
-        // then
-        then(result.minimumTotalPriceOf(brandId)).isEqualTo(33500);
+        then(outerProductMinimumPrice.brandId()).isEqualTo(outerMinimumPriceBrandId);
+        then(outerProductMinimumPrice.price()).isEqualTo(outerMinimumPrice);
+        then(outerProductMaximumPrice.brandId()).isEqualTo(outerMaximumBrandId);
+        then(outerProductMaximumPrice.price()).isEqualTo(outerMaximumPrice);
     }
 
     @Test
