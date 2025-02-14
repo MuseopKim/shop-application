@@ -1,4 +1,4 @@
-package commerce.shop.domain.aggregation.model;
+package commerce.shop.application.component.aggregation.model;
 
 import java.util.Collections;
 import java.util.List;

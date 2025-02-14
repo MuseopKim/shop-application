@@ -7,6 +7,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandRepository;
+import commerce.shop.domain.category.Category;
 import commerce.shop.jpa.DataJpaTest;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;

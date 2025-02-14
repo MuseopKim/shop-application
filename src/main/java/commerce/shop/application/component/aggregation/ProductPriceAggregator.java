@@ -1,9 +1,9 @@
-package commerce.shop.domain.aggregation;
+package commerce.shop.application.component.aggregation;
 
-import commerce.shop.domain.aggregation.model.BrandCategoryPriceAggregation;
-import commerce.shop.domain.aggregation.model.CategoryPriceAggregation;
-import commerce.shop.domain.aggregation.model.ProductPrice;
-import commerce.shop.domain.product.Category;
+import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
+import commerce.shop.application.component.aggregation.model.CategoryPriceAggregation;
+import commerce.shop.application.component.aggregation.model.ProductPrice;
+import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.PriceType;
 import commerce.shop.domain.product.ProductPriceSummary;
 import java.util.*;

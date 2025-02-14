@@ -1,4 +1,4 @@
-package commerce.shop.domain.product;
+package commerce.shop.domain.category;
 
 import lombok.RequiredArgsConstructor;
 

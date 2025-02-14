@@ -1,7 +1,7 @@
 package commerce.shop.fixture;
 
 import commerce.shop.domain.brand.Brand;
-import commerce.shop.domain.product.Category;
+import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.Product;
 
 public class Fixtures {

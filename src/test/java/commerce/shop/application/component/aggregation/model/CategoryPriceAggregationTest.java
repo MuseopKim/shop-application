@@ -1,8 +1,10 @@
-package commerce.shop.domain.aggregation.model;
+package commerce.shop.application.component.aggregation.model;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-import commerce.shop.domain.product.Category;
+import commerce.shop.application.component.aggregation.model.CategoryPriceAggregation;
+import commerce.shop.application.component.aggregation.model.ProductPrice;
+import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.PriceType;
 import java.util.List;
 import org.junit.jupiter.api.Test;

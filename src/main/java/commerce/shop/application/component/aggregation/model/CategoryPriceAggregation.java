@@ -1,6 +1,6 @@
-package commerce.shop.domain.aggregation.model;
+package commerce.shop.application.component.aggregation.model;
 
-import commerce.shop.domain.product.Category;
+import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.PriceType;
 import java.util.*;
 import java.util.function.Function;
@@ -27,6 +27,18 @@ public class CategoryPriceAggregation {
         }
 
         return Optional.ofNullable(maximumPrices.get(category));
+    }
+
+    public List<ProductPrice> allPricesOf(PriceType priceType) {
+        if (priceType == PriceType.MINIMUM_PRICE) {
+            return minimumPrices.values()
+                    .stream()
+                    .toList();
+        }
+
+        return maximumPrices.values()
+                .stream()
+                .toList();
     }
 
     public int calculateTotalPrice(PriceType priceType) {

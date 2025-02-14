@@ -1,6 +1,7 @@
 package commerce.shop.domain.product;
 
 import commerce.shop.domain.brand.Brand;
+import commerce.shop.domain.category.Category;
 import commerce.shop.global.jpa.DateTimeAuditEntity;
 import jakarta.persistence.*;
 import lombok.*;
