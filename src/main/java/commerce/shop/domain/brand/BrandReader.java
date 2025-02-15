@@ -11,7 +11,7 @@ public class BrandReader {
 
     private final BrandRepository brandRepository;
 
-    public Brands readBrands(Collection<Long> brandIds) {
+    public Brands readAllByIds(Collection<Long> brandIds) {
         List<Brand> brands = brandRepository.findAllById(brandIds);
 
         return Brands.of(brands);

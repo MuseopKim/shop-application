@@ -63,7 +63,7 @@ class ProductServiceTest {
         // when
         when(productReader.readAllPriceSummaries()).thenReturn(priceSummaries);
         when(priceAggregator.aggregatePricesOfCategory(priceSummaries)).thenReturn(aggregation);
-        when(brandReader.readBrands(Set.of(1L, 2L))).thenReturn(brands);
+        when(brandReader.readAllByIds(Set.of(1L, 2L))).thenReturn(brands);
 
         CategoryPrices result = productService.retrieveCategoryPrices(PriceType.MINIMUM_PRICE);
 

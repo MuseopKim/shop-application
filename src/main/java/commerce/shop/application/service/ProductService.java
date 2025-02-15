@@ -32,7 +32,7 @@ public class ProductService {
 
         List<ProductPrice> productPrices = aggregation.allPricesOf(priceType);
 
-        Brands brands = brandReader.readBrands(productPrices.stream()
+        Brands brands = brandReader.readAllByIds(productPrices.stream()
                 .map(ProductPrice::brandId)
                 .collect(Collectors.toSet()));
 

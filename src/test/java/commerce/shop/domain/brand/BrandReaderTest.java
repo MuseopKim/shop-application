@@ -23,7 +23,7 @@ class BrandReaderTest {
 
     @DisplayName("브랜드 ID 목록으로 브랜드 조회")
     @Test
-    void readBrandsTest() {
+    void readAllByIdsTest() {
         // given
         List<Long> brandIds = List.of(1L, 2L, 3L);
         List<Brand> givenBrands = List.of(
@@ -36,7 +36,7 @@ class BrandReaderTest {
                 .thenReturn(givenBrands);
 
         // when
-        Brands brands = brandReader.readBrands(brandIds);
+        Brands brands = brandReader.readAllByIds(brandIds);
 
         // then
         then(brands.size()).isEqualTo(givenBrands.size());
