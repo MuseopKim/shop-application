@@ -25,4 +25,13 @@ public class ProductService {
 
         return ProductPayload.of(product, brand);
     }
+
+    @Transactional
+    public ProductPayload modifyProduct(long id, ProductMutationCommand command) {
+        Brand brand = brandReader.getById(command.brandId());
+
+        Product product = productWriter.update(id, brand, command);
+
+        return ProductPayload.of(product, brand);
+    }
 }

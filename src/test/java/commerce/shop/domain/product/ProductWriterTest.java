@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import commerce.shop.application.service.model.ProductMutationCommand;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.category.Category;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,5 +54,33 @@ class ProductWriterTest {
 
         then(brand.getId()).isEqualTo(givenBrand.getId());
         then(brand.getName()).isEqualTo(givenBrand.getName());
+    }
+
+    @Test
+    @DisplayName("상품을 수정한다")
+    void update() {
+        // given
+        Brand givenBrand = brand().id(1L).name("나이키").build();
+        Product existingProduct = product()
+                .id(1L)
+                .brand(givenBrand)
+                .category(Category.TOP)
+                .name("티셔츠")
+                .price(10000)
+                .build();
+
+        ProductMutationCommand command =
+                new ProductMutationCommand(givenBrand.getId(), Category.TOP, "프리미엄 티셔츠", 10000);
+
+        when(productRepository.findById(existingProduct.getId())).thenReturn(Optional.of(existingProduct));
+
+        // when
+        Product product = productWriter.update(existingProduct.getId(), givenBrand, command);
+
+        // then
+        then(product.getId()).isEqualTo(existingProduct.getId());
+        then(product.getCategory()).isEqualTo(command.category());
+        then(product.getName()).isEqualTo(command.name());
+        then(product.getPrice()).isEqualTo(command.price());
     }
 }

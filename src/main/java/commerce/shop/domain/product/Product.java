@@ -27,4 +27,13 @@ public class Product extends DateTimeAuditEntity {
     private String name;
 
     private int price;
+
+    public Product update(String name, Brand brand, Category category, int price) {
+        this.name = name;
+        this.brand = brand;
+        this.category = category;
+        this.price = price;
+
+        return this;
+    }
 }

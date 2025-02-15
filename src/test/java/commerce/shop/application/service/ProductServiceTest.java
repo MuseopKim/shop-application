@@ -3,6 +3,7 @@ package commerce.shop.application.service;
 import static commerce.shop.fixture.Fixtures.brand;
 import static commerce.shop.fixture.Fixtures.product;
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import commerce.shop.api.controller.model.ProductPayload;
@@ -58,5 +59,43 @@ class ProductServiceTest {
         then(payload.getCategory()).isEqualTo(givenProduct.getCategory());
         then(payload.getName()).isEqualTo(givenProduct.getName());
         then(payload.getPrice()).isEqualTo(givenProduct.getPrice());
+    }
+
+    @Test
+    @DisplayName("상품을 수정한다")
+    void update() {
+        // given
+        Brand givenBrand = brand().id(1L).name("나이키").build();
+        ProductMutationCommand command = new ProductMutationCommand(givenBrand.getId(), Category.TOP, "티셔츠", 10000);
+        Product existingProduct = product()
+                .id(1L)
+                .brand(givenBrand)
+                .category(Category.TOP)
+                .name("티셔츠")
+                .price(10000)
+                .build();
+
+        Product updatedProduct = product()
+                .id(1L)
+                .brand(givenBrand)
+                .category(Category.TOP)
+                .name("프리미엄 티셔츠")
+                .price(20000)
+                .build();
+
+        when(brandReader.getById(command.brandId())).thenReturn(givenBrand);
+        when(productWriter.update(any(Long.class), any(Brand.class), any(ProductMutationCommand.class)))
+                .thenReturn(updatedProduct);
+
+        // when
+        ProductPayload payload = productService.modifyProduct(existingProduct.getId(), command);
+
+        // then
+        then(payload.getId()).isEqualTo(updatedProduct.getId());
+        then(payload.getBrandId()).isEqualTo(givenBrand.getId());
+        then(payload.getBrandName()).isEqualTo(givenBrand.getName());
+        then(payload.getCategory()).isEqualTo(updatedProduct.getCategory());
+        then(payload.getName()).isEqualTo(updatedProduct.getName());
+        then(payload.getPrice()).isEqualTo(updatedProduct.getPrice());
     }
 }
