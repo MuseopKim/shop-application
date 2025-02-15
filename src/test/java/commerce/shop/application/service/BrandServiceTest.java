@@ -44,4 +44,22 @@ class BrandServiceTest {
         then(brand.getId()).isEqualTo(givenBrand.getId());
         then(brand.getName()).isEqualTo(givenBrand.getName());
     }
+
+    @DisplayName("브랜드를 수정한다")
+    @Test
+    void modifyBrandTest() {
+        // given
+        long brandId = 1L;
+        BrandMutationCommand command = new BrandMutationCommand("나이키");
+
+        Brand givenBrand = brand().id(brandId).name("나이키").build();
+        when(brandWriter.update(brandId, command)).thenReturn(givenBrand);
+
+        // when
+        BrandPayload brand = brandService.modifyBrand(brandId, command);
+
+        // then
+        then(brand.getId()).isEqualTo(givenBrand.getId());
+        then(brand.getName()).isEqualTo(givenBrand.getName());
+    }
 }

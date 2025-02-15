@@ -23,4 +23,13 @@ public class BrandService {
                 .name(brand.getName())
                 .build();
     }
+
+    @Transactional
+    public BrandPayload modifyBrand(long id, BrandMutationCommand command) {
+        Brand brand = brandWriter.update(id, command);
+        return BrandPayload.builder()
+                .id(brand.getId())
+                .name(brand.getName())
+                .build();
+    }
 }

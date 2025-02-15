@@ -19,4 +19,9 @@ public class Brand extends DateTimeAuditEntity {
     private Long id;
 
     private String name;
+
+    public Brand update(String name) {
+        this.name = name;
+        return this;
+    }
 }
