@@ -2,6 +2,7 @@ package commerce.shop.domain.brand;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,5 +16,9 @@ public class BrandReader {
         List<Brand> brands = brandRepository.findAllById(brandIds);
 
         return Brands.of(brands);
+    }
+
+    public Optional<Brand> readById(long id) {
+        return brandRepository.findById(id);
     }
 }

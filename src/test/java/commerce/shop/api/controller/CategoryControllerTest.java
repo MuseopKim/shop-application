@@ -7,11 +7,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import commerce.shop.api.controller.model.CategoryPrice;
-import commerce.shop.api.controller.model.CategoryPrices;
+import commerce.shop.application.service.model.CategoryBrandPrice;
+import commerce.shop.application.service.model.CategoryMinimumPrices;
 import commerce.shop.application.service.ProductService;
 import commerce.shop.domain.category.Category;
-import commerce.shop.domain.product.PriceType;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,14 +33,14 @@ class CategoryControllerTest {
     @Test
     void categoryMinimumPricesTest() throws Exception {
         // given
-        CategoryPrices expectedResponse = CategoryPrices.builder()
+        CategoryMinimumPrices expectedResponse = CategoryMinimumPrices.builder()
                 .prices(List.of(
-                        CategoryPrice.builder()
+                        CategoryBrandPrice.builder()
                                 .category(Category.TOP)
                                 .brandName("C")
                                 .price(10000)
                                 .build(),
-                        CategoryPrice.builder()
+                        CategoryBrandPrice.builder()
                                 .category(Category.OUTER)
                                 .brandName("E")
                                 .price(5000)

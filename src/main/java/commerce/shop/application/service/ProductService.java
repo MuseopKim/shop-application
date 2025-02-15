@@ -1,10 +1,11 @@
 package commerce.shop.application.service;
 
-import commerce.shop.api.controller.model.CategoryPrice;
-import commerce.shop.api.controller.model.CategoryPrices;
+import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
+import commerce.shop.application.service.model.*;
 import commerce.shop.application.component.aggregation.ProductPriceAggregator;
 import commerce.shop.application.component.aggregation.model.CategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.ProductPrice;
+import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandReader;
 import commerce.shop.domain.brand.Brands;
 import commerce.shop.domain.product.PriceType;
@@ -25,7 +26,7 @@ public class ProductService {
     private final ProductPriceAggregator priceAggregator;
 
     @Transactional(readOnly = true)
-    public CategoryPrices retrieveCategoryMinimumPrices() {
+    public CategoryMinimumPrices retrieveCategoryMinimumPrices() {
         List<ProductPriceSummary> priceSummaries = productReader.readAllPriceSummaries();
 
         CategoryPriceAggregation aggregation = priceAggregator.aggregatePricesOfCategory(priceSummaries);
@@ -38,8 +39,8 @@ public class ProductService {
                 .map(ProductPrice::brandId)
                 .collect(Collectors.toSet()));
 
-        List<CategoryPrice> categoryPrices = productPrices.stream()
-                .map(productPrice -> CategoryPrice.builder()
+        List<CategoryBrandPrice> categoryBrandPrices = productPrices.stream()
+                .map(productPrice -> CategoryBrandPrice.builder()
                         .category(productPrice.category())
                         .brandName(brands.findNameById(productPrice.brandId())
                                 .orElse("Unknown"))
@@ -47,9 +48,41 @@ public class ProductService {
                         .build())
                 .toList();
 
-        return CategoryPrices.builder()
-                .prices(categoryPrices)
+        return CategoryMinimumPrices.builder()
+                .prices(categoryBrandPrices)
                 .totalPrice(totalPrice)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public BrandMinimumTotalPriceResponse retrieveBrandMinimumTotalPrice() {
+        List<ProductPriceSummary> summaries = productReader.readAllPriceSummaries();
+
+        BrandCategoryPriceAggregation aggregation =
+                priceAggregator.aggregateBrandCategoryMinimumPrices(summaries);
+
+        long minimumPriceBrandId = aggregation.minimumTotalPriceBrandId();
+
+        Brand brand = brandReader.readById(minimumPriceBrandId)
+                .orElseThrow(() -> new RuntimeException("Brand not found"));
+
+        List<ProductPrice> prices = aggregation.minimumPricesOf(minimumPriceBrandId);
+
+        int totalPrice = aggregation.calculateMinimumTotalPriceOf(minimumPriceBrandId);
+
+        List<CategoryPrice> categoryPrices = prices.stream()
+                .map(productPrice -> CategoryPrice.builder()
+                        .category(productPrice.category())
+                        .price(productPrice.price())
+                        .build())
+                .toList();
+
+        return BrandMinimumTotalPriceResponse.builder()
+                .minimumPrice(BrandTotalPrice.builder()
+                        .brandName(brand.getName())
+                        .categories(categoryPrices)
+                        .totalPrice(totalPrice)
+                        .build())
                 .build();
     }
 }

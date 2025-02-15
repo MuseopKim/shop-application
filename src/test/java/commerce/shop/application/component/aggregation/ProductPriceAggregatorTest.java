@@ -2,7 +2,6 @@ package commerce.shop.application.component.aggregation;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-import commerce.shop.application.component.aggregation.ProductPriceAggregator;
 import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.CategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.ProductPrice;
@@ -80,7 +79,7 @@ class ProductPriceAggregatorTest {
         BrandCategoryPriceAggregation result = aggregator.aggregateBrandCategoryMinimumPrices(productPrices);
 
         // then
-        then(result.minimumTotalPriceOf(brandId)).isZero();
+        then(result.calculateMinimumTotalPriceOf(brandId)).isZero();
     }
 
     @Test
@@ -95,8 +94,8 @@ class ProductPriceAggregatorTest {
         BrandCategoryPriceAggregation result = aggregator.aggregateBrandCategoryMinimumPrices(productPrices);
 
         // then
-        then(result.minimumTotalPriceOf(brand1Id)).isEqualTo(33500);
-        then(result.minimumTotalPriceOf(brand2Id)).isEqualTo(35000);
+        then(result.calculateMinimumTotalPriceOf(brand1Id)).isEqualTo(33500);
+        then(result.calculateMinimumTotalPriceOf(brand2Id)).isEqualTo(35000);
     }
 
     @Test
@@ -121,7 +120,7 @@ class ProductPriceAggregatorTest {
         BrandCategoryPriceAggregation result = aggregator.aggregateBrandCategoryMinimumPrices(productPrices);
 
         // then
-        then(result.minimumTotalPriceOf(brandId)).isEqualTo(33500);
+        then(result.calculateMinimumTotalPriceOf(brandId)).isEqualTo(33500);
     }
 
     @Test
@@ -134,7 +133,7 @@ class ProductPriceAggregatorTest {
         BrandCategoryPriceAggregation result = aggregator.aggregateBrandCategoryMinimumPrices(emptyPrices);
 
         // then
-        then(result.minimumTotalPriceOf(1L)).isZero();
+        then(result.calculateMinimumTotalPriceOf(1L)).isZero();
     }
 
     private List<ProductPriceSummary> createMultipleBrandPrices(long brand1Id, long brand2Id) {
