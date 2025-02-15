@@ -25,4 +25,14 @@ public class BrandWriter {
 
         return brand.update(command.name());
     }
+
+    @Transactional
+    public boolean delete(long id) {
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException());
+
+        brandRepository.delete(brand);
+
+        return true;
+    }
 }

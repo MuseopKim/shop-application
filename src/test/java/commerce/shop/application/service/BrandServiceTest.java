@@ -2,6 +2,7 @@ package commerce.shop.application.service;
 
 import static commerce.shop.fixture.Fixtures.brand;
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +10,7 @@ import commerce.shop.application.service.model.BrandMutationCommand;
 import commerce.shop.application.service.model.BrandPayload;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandWriter;
+import commerce.shop.domain.product.ProductReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,9 @@ class BrandServiceTest {
 
     @Mock
     private BrandWriter brandWriter;
+
+    @Mock
+    private ProductReader productReader;
 
     @InjectMocks
     private BrandService brandService;
@@ -61,5 +66,34 @@ class BrandServiceTest {
         // then
         then(brand.getId()).isEqualTo(givenBrand.getId());
         then(brand.getName()).isEqualTo(givenBrand.getName());
+    }
+
+    @DisplayName("브랜드 삭제 - 성공")
+    @Test
+    void removeBrandTest() {
+        // given
+        long brandId = 1L;
+
+        when(productReader.exists(brandId)).thenReturn(false);
+        when(brandWriter.delete(brandId)).thenReturn(true);
+
+        // when
+        boolean removed = brandService.removeBrand(brandId);
+
+        // then
+        then(removed).isTrue();
+    }
+
+    @DisplayName("브랜드 삭제 - 연관된 상품이 있는 경우")
+    @Test
+    void removeBrandWhenProductExistsTest() {
+        // given
+        long brandId = 1L;
+
+        when(productReader.exists(brandId)).thenReturn(true);
+
+        // when & then
+        thenThrownBy(() -> brandService.removeBrand(brandId))
+                .isInstanceOf(RuntimeException.class);
     }
 }

@@ -2,6 +2,7 @@ package commerce.shop.domain.product;
 
 import commerce.shop.domain.category.Category;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -31,4 +32,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
              GROUP BY p.category, p.brand
             """)
     List<ProductPriceSummary> findAllProductPricesGroupByBrandAndCategory(Category category);
+
+    @Query("""
+              SELECT p
+              FROM Product p
+              WHERE p.brand.id = :brandId
+              ORDER BY p.id DESC
+              LIMIT 1
+            """)
+    Optional<Product> findLatestByBrandId(long brandId);
 }

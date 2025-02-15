@@ -12,6 +12,7 @@ import commerce.shop.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -88,5 +89,32 @@ class ProductRepositoryTest extends DataJpaTest {
         then(summary.category()).isEqualTo(Category.OUTER);
         then(summary.maximumPrice()).isEqualTo(outerProduct.getPrice());
         then(summary.minimumPrice()).isEqualTo(outerProduct.getPrice());
+    }
+
+    @DisplayName("브랜드의 가장 최근 상품을 조회한다")
+    @Test
+    void findLatestByBrandIdTest() {
+        // given
+        Brand brand = brandRepository.save(brand().build());
+
+        for (int i = 0; i < 5; i++) {
+            productRepository.save(product()
+                    .brand(brand)
+                    .build());
+        }
+
+        Product latestProduct =
+                productRepository.save(product()
+                        .brand(brand)
+                        .build());
+
+        // when
+        Optional<Product> productOptional = productRepository.findLatestByBrandId(brand.getId());
+
+        // then
+        then(productOptional).isPresent();
+
+        Product product = productOptional.get();
+        then(product.getId()).isEqualTo(latestProduct.getId());
     }
 }
