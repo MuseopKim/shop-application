@@ -1,5 +1,6 @@
-package commerce.shop.application.service.model;
+package commerce.shop.api.controller.model;
 
+import commerce.shop.application.service.model.BrandPrice;
 import commerce.shop.domain.category.Category;
 import java.util.List;
 import lombok.Builder;
@@ -7,9 +8,9 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CategoryPriceRangeResponse {
+public class CategoryPriceRangePayload {
 
-    public static final CategoryPriceRangeResponse EMPTY = CategoryPriceRangeResponse.builder().build();
+    public static final CategoryPriceRangePayload EMPTY = CategoryPriceRangePayload.builder().build();
 
     private final Category category;
     private final List<BrandPrice> minimumPrices;

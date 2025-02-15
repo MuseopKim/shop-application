@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import commerce.shop.application.service.model.CategoryBrandPrice;
-import commerce.shop.application.service.model.CategoryMinimumPrices;
+import commerce.shop.api.controller.model.CategoryMinimumPricesPayload;
 import commerce.shop.application.service.ProductPriceService;
 import commerce.shop.domain.category.Category;
 import java.util.List;
@@ -33,7 +33,7 @@ class CategoryControllerTest {
     @Test
     void categoryMinimumPricesTest() throws Exception {
         // given
-        CategoryMinimumPrices expectedResponse = CategoryMinimumPrices.builder()
+        CategoryMinimumPricesPayload expectedResponse = CategoryMinimumPricesPayload.builder()
                 .prices(List.of(
                         CategoryBrandPrice.builder()
                                 .category(Category.TOP)

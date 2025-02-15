@@ -1,5 +1,8 @@
 package commerce.shop.application.service;
 
+import commerce.shop.api.controller.model.BrandMinimumTotalPricePayload;
+import commerce.shop.api.controller.model.CategoryMinimumPricesPayload;
+import commerce.shop.api.controller.model.CategoryPriceRangePayload;
 import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
 import commerce.shop.application.service.model.*;
 import commerce.shop.application.component.aggregation.ProductPriceAggregator;
@@ -28,7 +31,7 @@ public class ProductPriceService {
     private final ProductPriceAggregator priceAggregator;
 
     @Transactional(readOnly = true)
-    public CategoryMinimumPrices retrieveCategoryMinimumPrices() {
+    public CategoryMinimumPricesPayload retrieveCategoryMinimumPrices() {
         List<ProductPriceSummary> priceSummaries = productReader.readAllPriceSummaries();
 
         CategoryPriceAggregation aggregation = priceAggregator.aggregatePricesOfCategory(priceSummaries);
@@ -50,14 +53,14 @@ public class ProductPriceService {
                         .build())
                 .toList();
 
-        return CategoryMinimumPrices.builder()
+        return CategoryMinimumPricesPayload.builder()
                 .prices(categoryBrandPrices)
                 .totalPrice(totalPrice)
                 .build();
     }
 
     @Transactional(readOnly = true)
-    public BrandMinimumTotalPriceResponse retrieveBrandMinimumTotalPrice() {
+    public BrandMinimumTotalPricePayload retrieveBrandMinimumTotalPrice() {
         List<ProductPriceSummary> summaries = productReader.readAllPriceSummaries();
 
         BrandCategoryPriceAggregation aggregation =
@@ -79,7 +82,7 @@ public class ProductPriceService {
                         .build())
                 .toList();
 
-        return BrandMinimumTotalPriceResponse.builder()
+        return BrandMinimumTotalPricePayload.builder()
                 .minimumPrice(BrandTotalPrice.builder()
                         .brandName(brand.getName())
                         .categories(categoryPrices)
@@ -89,10 +92,10 @@ public class ProductPriceService {
     }
 
     @Transactional(readOnly = true)
-    public CategoryPriceRangeResponse retrieveCategoryPriceRanges(Category category) {
+    public CategoryPriceRangePayload retrieveCategoryPriceRanges(Category category) {
         List<ProductPriceSummary> summaries = productReader.readPriceSummaries(category);
         if (summaries.isEmpty()) {
-            return CategoryPriceRangeResponse.EMPTY;
+            return CategoryPriceRangePayload.EMPTY;
         }
 
         CategoryPriceAggregation aggregation = priceAggregator.aggregatePricesOfCategory(summaries);
@@ -102,7 +105,7 @@ public class ProductPriceService {
 
         Brands brands = brandReader.readAllByIds(Set.of(minimumPrice.brandId(), maximumPrice.brandId()));
 
-        return CategoryPriceRangeResponse.builder()
+        return CategoryPriceRangePayload.builder()
                 .minimumPrices(List.of(BrandPrice.builder()
                         .brandName(brands.findNameById(minimumPrice.brandId())
                                 .orElse("Unknown"))

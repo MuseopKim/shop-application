@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import commerce.shop.api.controller.model.BrandMinimumTotalPricePayload;
 import commerce.shop.application.service.ProductPriceService;
-import commerce.shop.application.service.model.BrandMinimumTotalPriceResponse;
 import commerce.shop.application.service.model.BrandTotalPrice;
 import commerce.shop.application.service.model.CategoryPrice;
 import commerce.shop.domain.category.Category;
@@ -51,7 +51,7 @@ class BrandControllerTest {
                 .totalPrice(15000)
                 .build();
 
-        BrandMinimumTotalPriceResponse response = BrandMinimumTotalPriceResponse.builder()
+        BrandMinimumTotalPricePayload response = BrandMinimumTotalPricePayload.builder()
                 .minimumPrice(brandTotalPrice)
                 .build();
 

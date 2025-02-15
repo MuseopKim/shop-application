@@ -5,6 +5,9 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import commerce.shop.api.controller.model.BrandMinimumTotalPricePayload;
+import commerce.shop.api.controller.model.CategoryMinimumPricesPayload;
+import commerce.shop.api.controller.model.CategoryPriceRangePayload;
 import commerce.shop.application.component.aggregation.ProductPriceAggregator;
 import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.CategoryPriceAggregation;
@@ -68,7 +71,7 @@ class ProductPriceServiceTest {
         when(priceAggregator.aggregatePricesOfCategory(priceSummaries)).thenReturn(aggregation);
         when(brandReader.readAllByIds(Set.of(1L, 2L))).thenReturn(brands);
 
-        CategoryMinimumPrices result = productPriceService.retrieveCategoryMinimumPrices();
+        CategoryMinimumPricesPayload result = productPriceService.retrieveCategoryMinimumPrices();
 
         // then
         then(result).isNotNull();
@@ -122,7 +125,7 @@ class ProductPriceServiceTest {
         when(aggregation.minimumPricesOf(1L)).thenReturn(prices);
         when(aggregation.calculateMinimumTotalPriceOf(1L)).thenReturn(34500);
 
-        BrandMinimumTotalPriceResponse response = productPriceService.retrieveBrandMinimumTotalPrice();
+        BrandMinimumTotalPricePayload response = productPriceService.retrieveBrandMinimumTotalPrice();
 
         // then
         then(response).isNotNull();
@@ -165,7 +168,7 @@ class ProductPriceServiceTest {
         when(aggregation.priceOf(category, PriceType.MAXIMUM_PRICE)).thenReturn(maximumPrice);
         when(brandReader.readAllByIds(Set.of(1L, 2L))).thenReturn(brands);
 
-        CategoryPriceRangeResponse response = productPriceService.retrieveCategoryPriceRanges(category);
+        CategoryPriceRangePayload response = productPriceService.retrieveCategoryPriceRanges(category);
 
         // then
         then(response).isNotNull();
