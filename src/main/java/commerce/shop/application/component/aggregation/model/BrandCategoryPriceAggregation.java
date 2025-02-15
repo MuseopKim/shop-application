@@ -1,9 +1,6 @@
 package commerce.shop.application.component.aggregation.model;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BrandCategoryPriceAggregation {
@@ -20,12 +17,25 @@ public class BrandCategoryPriceAggregation {
                 .collect(Collectors.groupingBy(ProductPrice::brandId));
     }
 
-    public int minimumTotalPriceOf(long brandId) {
+    public int calculateMinimumTotalPriceOf(long brandId) {
         List<ProductPrice> brandCategoryPrices = this.brandCategoryPrices.getOrDefault(brandId, Collections.emptyList());
 
         return brandCategoryPrices
                 .stream()
                 .map(ProductPrice::price)
                 .reduce(0, Integer::sum);
+    }
+
+    public List<ProductPrice> minimumPricesOf(long brandId) {
+        return brandCategoryPrices.getOrDefault(brandId, Collections.emptyList());
+    }
+
+    public long minimumTotalPriceBrandId() {
+        return brandCategoryPrices.keySet()
+                .stream()
+                .sorted(Comparator.comparingInt(this::calculateMinimumTotalPriceOf))
+                .limit(1)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No price founds"));
     }
 }
