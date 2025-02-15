@@ -14,3 +14,13 @@ spring:
         format_sql: true
         highlight_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+
+cache:
+  caffeine:
+    maximum-entry-size: 1000
+    expiration-minutes: 30

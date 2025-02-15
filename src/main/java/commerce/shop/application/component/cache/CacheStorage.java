@@ -2,6 +2,7 @@ package commerce.shop.application.component.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Scheduler;
 import commerce.shop.global.config.cache.CacheProps;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -14,14 +15,15 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class LocalCacheManager {
+public class CacheStorage {
 
     private final Cache<String, Object> cache;
 
-    public LocalCacheManager(CacheProps cacheProps) {
+    public CacheStorage(CacheProps cacheProps) {
         this.cache = Caffeine.newBuilder()
                 .expireAfterWrite(cacheProps.expirationMinutes(), TimeUnit.MINUTES)
                 .maximumSize(cacheProps.maximumEntrySize())
+                .scheduler(Scheduler.systemScheduler())
                 .build();
     }
 

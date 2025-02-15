@@ -7,18 +7,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest
-class CacheManagerTest {
+class CacheStorageTest {
 
     @Autowired
-    private LocalCacheManager cacheManager;
+    private CacheStorage cacheStorage;
 
     @DisplayName("캐시가 존재하지 않을 경우 빈 Optional을 반환한다")
     @Test
     void getReturnsEmptyWhenCacheNotExistsTest() {
         // when
-        Optional<String> result = cacheManager.get("non_existent_key", String.class);
+        Optional<String> result = cacheStorage.get("non_existent_key", String.class);
 
         // then
         then(result).isEmpty();
@@ -30,10 +32,10 @@ class CacheManagerTest {
         // given
         String key = "test_key";
         String value = "test_value";
-        cacheManager.set(key, value);
+        cacheStorage.set(key, value);
 
         // when
-        Optional<String> result = cacheManager.get(key, String.class);
+        Optional<String> result = cacheStorage.get(key, String.class);
 
         // then
         then(result).isPresent();
@@ -48,10 +50,10 @@ class CacheManagerTest {
         PriceResponse value = new PriceResponse("brandA", 10000);
 
         // when
-        cacheManager.set(key, value);
+        cacheStorage.set(key, value);
 
         // then
-        Optional<PriceResponse> result = cacheManager.get(key, PriceResponse.class);
+        Optional<PriceResponse> result = cacheStorage.get(key, PriceResponse.class);
         then(result).isPresent();
         then(result.get()).isEqualTo(value);
     }
@@ -62,10 +64,10 @@ class CacheManagerTest {
         // given
         String key = CacheKey.BRAND_PRICE_MINIMUM_TOTAL;
         PriceResponse cachedValue = new PriceResponse("brandA", 10000);
-        cacheManager.set(key, cachedValue);
+        cacheStorage.set(key, cachedValue);
 
         // when
-        PriceResponse result = cacheManager.getOrElse(
+        PriceResponse result = cacheStorage.getOrElse(
                 key,
                 PriceResponse.class,
                 () -> new PriceResponse("brandB", 20000)
@@ -83,7 +85,7 @@ class CacheManagerTest {
         PriceResponse newValue = new PriceResponse("brandA", 10000);
 
         // when
-        PriceResponse result = cacheManager.getOrElse(
+        PriceResponse result = cacheStorage.getOrElse(
                 key,
                 PriceResponse.class,
                 () -> newValue
@@ -91,7 +93,7 @@ class CacheManagerTest {
 
         // then
         then(result).isEqualTo(newValue);
-        Optional<PriceResponse> cachedValue = cacheManager.get(key, PriceResponse.class);
+        Optional<PriceResponse> cachedValue = cacheStorage.get(key, PriceResponse.class);
         then(cachedValue).isPresent();
         then(cachedValue.get()).isEqualTo(newValue);
     }
@@ -102,13 +104,13 @@ class CacheManagerTest {
         // given
         String key = String.format(CacheKey.CATEGORY_PRICE_RANGE, "TOP");
         PriceResponse value = new PriceResponse("brandA", 10000);
-        cacheManager.set(key, value);
+        cacheStorage.set(key, value);
 
         // when
-        cacheManager.remove(key);
+        cacheStorage.remove(key);
 
         // then
-        Optional<PriceResponse> result = cacheManager.get(key, PriceResponse.class);
+        Optional<PriceResponse> result = cacheStorage.get(key, PriceResponse.class);
         then(result).isEmpty();
     }
 }

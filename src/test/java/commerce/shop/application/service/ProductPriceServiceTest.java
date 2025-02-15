@@ -12,7 +12,9 @@ import commerce.shop.application.component.aggregation.ProductPriceAggregator;
 import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.CategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.ProductPrice;
-import commerce.shop.application.service.model.*;
+import commerce.shop.application.service.model.PriceWithBrand;
+import commerce.shop.application.service.model.PriceWithCategory;
+import commerce.shop.application.service.model.PriceWithCategoryAndBrand;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandReader;
 import commerce.shop.domain.brand.Brands;
@@ -71,7 +73,7 @@ class ProductPriceServiceTest {
         when(priceAggregator.aggregatePricesOfCategory(priceSummaries)).thenReturn(aggregation);
         when(brandReader.readAllByIds(Set.of(1L, 2L))).thenReturn(brands);
 
-        CategoryMinimumPricesPayload result = productPriceService.retrieveCategoryMinimumPrices();
+        CategoryMinimumPricesPayload result = productPriceService.fetchCategoryMinimumPrices();
 
         // then
         then(result).isNotNull();
@@ -125,7 +127,7 @@ class ProductPriceServiceTest {
         when(aggregation.minimumPricesOf(1L)).thenReturn(prices);
         when(aggregation.calculateMinimumTotalPriceOf(1L)).thenReturn(34500);
 
-        BrandMinimumTotalPricePayload response = productPriceService.retrieveBrandMinimumTotalPrice();
+        BrandMinimumTotalPricePayload response = productPriceService.fetchBrandMinimumTotalPrice();
 
         // then
         then(response).isNotNull();
@@ -168,7 +170,7 @@ class ProductPriceServiceTest {
         when(aggregation.priceOf(category, PriceType.MAXIMUM_PRICE)).thenReturn(maximumPrice);
         when(brandReader.readAllByIds(Set.of(1L, 2L))).thenReturn(brands);
 
-        CategoryPriceRangePayload response = productPriceService.retrieveCategoryPriceRanges(category);
+        CategoryPriceRangePayload response = productPriceService.fetchCategoryPriceRanges(category);
 
         // then
         then(response).isNotNull();

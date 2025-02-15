@@ -3,11 +3,16 @@ package commerce.shop.application.service;
 import commerce.shop.api.controller.model.BrandMinimumTotalPricePayload;
 import commerce.shop.api.controller.model.CategoryMinimumPricesPayload;
 import commerce.shop.api.controller.model.CategoryPriceRangePayload;
-import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
-import commerce.shop.application.service.model.*;
 import commerce.shop.application.component.aggregation.ProductPriceAggregator;
+import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.CategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.ProductPrice;
+import commerce.shop.application.component.cache.CacheKey;
+import commerce.shop.application.component.cache.CacheStorage;
+import commerce.shop.application.service.model.BrandTotalPrice;
+import commerce.shop.application.service.model.PriceWithBrand;
+import commerce.shop.application.service.model.PriceWithCategory;
+import commerce.shop.application.service.model.PriceWithCategoryAndBrand;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandReader;
 import commerce.shop.domain.brand.Brands;
@@ -29,9 +34,18 @@ public class ProductPriceService {
     private final ProductReader productReader;
     private final BrandReader brandReader;
     private final ProductPriceAggregator priceAggregator;
+    private final CacheStorage cacheStorage;
 
     @Transactional(readOnly = true)
     public CategoryMinimumPricesPayload retrieveCategoryMinimumPrices() {
+        return cacheStorage.getOrElse(
+                CacheKey.CATEGORY_PRICE_MINIMUM,
+                CategoryMinimumPricesPayload.class,
+                this::fetchCategoryMinimumPrices);
+    }
+
+    @Transactional(readOnly = true)
+    public CategoryMinimumPricesPayload fetchCategoryMinimumPrices() {
         List<ProductPriceSummary> priceSummaries = productReader.readAllPriceSummaries();
 
         CategoryPriceAggregation aggregation = priceAggregator.aggregatePricesOfCategory(priceSummaries);
@@ -61,6 +75,14 @@ public class ProductPriceService {
 
     @Transactional(readOnly = true)
     public BrandMinimumTotalPricePayload retrieveBrandMinimumTotalPrice() {
+        return cacheStorage.getOrElse(
+                CacheKey.BRAND_PRICE_MINIMUM_TOTAL,
+                BrandMinimumTotalPricePayload.class,
+                this::fetchBrandMinimumTotalPrice);
+    }
+
+    @Transactional(readOnly = true)
+    public BrandMinimumTotalPricePayload fetchBrandMinimumTotalPrice() {
         List<ProductPriceSummary> summaries = productReader.readAllPriceSummaries();
 
         BrandCategoryPriceAggregation aggregation =
@@ -93,6 +115,16 @@ public class ProductPriceService {
 
     @Transactional(readOnly = true)
     public CategoryPriceRangePayload retrieveCategoryPriceRanges(Category category) {
+        String cacheKey = String.format(CacheKey.CATEGORY_PRICE_RANGE, category.name());
+
+        return cacheStorage.getOrElse(
+                cacheKey,
+                CategoryPriceRangePayload.class,
+                () -> fetchCategoryPriceRanges(category));
+    }
+
+    @Transactional(readOnly = true)
+    public CategoryPriceRangePayload fetchCategoryPriceRanges(Category category) {
         List<ProductPriceSummary> summaries = productReader.readPriceSummaries(category);
         if (summaries.isEmpty()) {
             return CategoryPriceRangePayload.EMPTY;
