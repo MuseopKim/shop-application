@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class ProductService {
+public class ProductPriceService {
 
     private final ProductReader productReader;
     private final BrandReader brandReader;

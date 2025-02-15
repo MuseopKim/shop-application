@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import commerce.shop.application.service.ProductService;
+import commerce.shop.application.service.ProductPriceService;
 import commerce.shop.application.service.model.BrandMinimumTotalPriceResponse;
 import commerce.shop.application.service.model.BrandTotalPrice;
 import commerce.shop.application.service.model.CategoryPrice;
@@ -28,7 +28,7 @@ class BrandControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private ProductService productService;
+    private ProductPriceService productPriceService;
 
     @DisplayName("브랜드 별 최저가 조회 API 테스트")
     @Test
@@ -55,7 +55,7 @@ class BrandControllerTest {
                 .minimumPrice(brandTotalPrice)
                 .build();
 
-        when(productService.retrieveBrandMinimumTotalPrice()).thenReturn(response);
+        when(productPriceService.retrieveBrandMinimumTotalPrice()).thenReturn(response);
 
         // when / then
         mockMvc.perform(get("/brands/minimum-total-price")

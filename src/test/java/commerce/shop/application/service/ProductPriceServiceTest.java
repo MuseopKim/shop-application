@@ -30,7 +30,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+class ProductPriceServiceTest {
 
     @Mock
     private ProductReader productReader;
@@ -42,7 +42,7 @@ class ProductServiceTest {
     private ProductPriceAggregator priceAggregator;
 
     @InjectMocks
-    private ProductService productService;
+    private ProductPriceService productPriceService;
 
     @DisplayName("카테고리 별 최저가를 조회한다")
     @Test
@@ -70,7 +70,7 @@ class ProductServiceTest {
         when(priceAggregator.aggregatePricesOfCategory(priceSummaries)).thenReturn(aggregation);
         when(brandReader.readAllByIds(Set.of(1L, 2L))).thenReturn(brands);
 
-        CategoryMinimumPrices result = productService.retrieveCategoryMinimumPrices();
+        CategoryMinimumPrices result = productPriceService.retrieveCategoryMinimumPrices();
 
         // then
         then(result).isNotNull();
@@ -124,7 +124,7 @@ class ProductServiceTest {
         when(aggregation.minimumPricesOf(1L)).thenReturn(prices);
         when(aggregation.calculateMinimumTotalPriceOf(1L)).thenReturn(34500);
 
-        BrandMinimumTotalPriceResponse response = productService.retrieveBrandMinimumTotalPrice();
+        BrandMinimumTotalPriceResponse response = productPriceService.retrieveBrandMinimumTotalPrice();
 
         // then
         then(response).isNotNull();

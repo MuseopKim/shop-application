@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import commerce.shop.application.service.model.CategoryBrandPrice;
 import commerce.shop.application.service.model.CategoryMinimumPrices;
-import commerce.shop.application.service.ProductService;
+import commerce.shop.application.service.ProductPriceService;
 import commerce.shop.domain.category.Category;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +27,7 @@ class CategoryControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private ProductService productService;
+    private ProductPriceService productPriceService;
 
     @DisplayName("카테고리 별 최저 가격 조회")
     @Test
@@ -49,7 +49,7 @@ class CategoryControllerTest {
                 .totalPrice(15000)
                 .build();
 
-        given(productService.retrieveCategoryMinimumPrices())
+        given(productPriceService.retrieveCategoryMinimumPrices())
                 .willReturn(expectedResponse);
 
         // then
