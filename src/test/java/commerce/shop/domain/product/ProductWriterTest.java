@@ -83,4 +83,20 @@ class ProductWriterTest {
         then(product.getName()).isEqualTo(command.name());
         then(product.getPrice()).isEqualTo(command.price());
     }
+
+    @DisplayName("상품 삭제 성공")
+    @Test
+    void delete() {
+        // given
+        long productId = 1L;
+        Product product = product().build();
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        // when
+        boolean result = productWriter.delete(productId);
+
+        // then
+        then(result).isTrue();
+    }
 }

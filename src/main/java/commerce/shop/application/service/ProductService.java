@@ -34,4 +34,9 @@ public class ProductService {
 
         return ProductPayload.of(product, brand);
     }
+
+    @Transactional
+    public boolean removeProduct(long id) {
+        return productWriter.delete(id);
+    }
 }

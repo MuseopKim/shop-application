@@ -61,8 +61,8 @@ class ProductServiceTest {
         then(payload.getPrice()).isEqualTo(givenProduct.getPrice());
     }
 
-    @Test
     @DisplayName("상품을 수정한다")
+    @Test
     void update() {
         // given
         Brand givenBrand = brand().id(1L).name("나이키").build();
@@ -97,5 +97,19 @@ class ProductServiceTest {
         then(payload.getCategory()).isEqualTo(updatedProduct.getCategory());
         then(payload.getName()).isEqualTo(updatedProduct.getName());
         then(payload.getPrice()).isEqualTo(updatedProduct.getPrice());
+    }
+
+    @DisplayName("상품을 삭제한다")
+    @Test
+    void removeProduct() {
+        // given
+        long productId = 1L;
+        when(productWriter.delete(productId)).thenReturn(true);
+
+        // when
+        boolean result = productService.removeProduct(productId);
+
+        // then
+        then(result).isTrue();
     }
 }

@@ -29,4 +29,14 @@ public class ProductWriter {
 
         return product.update(command.name(), brand, command.category(), command.price());
     }
+
+    @Transactional
+    public boolean delete(long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException());
+
+        productRepository.delete(product);
+
+        return true;
+    }
 }
