@@ -1,7 +1,7 @@
 package commerce.shop.application.service;
 
 import commerce.shop.application.service.model.BrandMutationCommand;
-import commerce.shop.application.service.model.BrandPayload;
+import commerce.shop.api.controller.model.BrandPayload;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandWriter;
 import commerce.shop.domain.product.ProductReader;

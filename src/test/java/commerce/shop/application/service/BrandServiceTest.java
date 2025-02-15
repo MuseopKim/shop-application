@@ -3,11 +3,10 @@ package commerce.shop.application.service;
 import static commerce.shop.fixture.Fixtures.brand;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import commerce.shop.application.service.model.BrandMutationCommand;
-import commerce.shop.application.service.model.BrandPayload;
+import commerce.shop.api.controller.model.BrandPayload;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandWriter;
 import commerce.shop.domain.product.ProductReader;

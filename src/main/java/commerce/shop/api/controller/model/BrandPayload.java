@@ -1,4 +1,4 @@
-package commerce.shop.application.service.model;
+package commerce.shop.api.controller.model;
 
 import lombok.Builder;
 import lombok.Getter;

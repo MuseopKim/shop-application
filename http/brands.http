@@ -1,3 +1,24 @@
 ### 단일 브랜드 전체 카테고리 최저가격 조회
 GET http://localhost:8080/brands/minimum-total-price
 Accept: application/json
+
+### 브랜드 등록
+POST http://localhost:8080/brands
+Content-Type: application/json
+
+{
+  "name": "브랜드A"
+}
+
+> {% client.global.set("brandId", response.body.payload.id); %}
+
+### 브랜드 수정
+PUT http://localhost:8080/brands/{{brandId}}
+Content-Type: application/json
+
+{
+  "name": "브랜드ABC"
+}
+
+### 브랜드 삭제
+DELETE http://localhost:8080/brands/{{brandId}}
