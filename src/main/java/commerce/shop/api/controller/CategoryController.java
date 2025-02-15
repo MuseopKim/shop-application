@@ -1,7 +1,7 @@
 package commerce.shop.api.controller;
 
+import commerce.shop.api.model.ApiResponse;
 import commerce.shop.application.service.ProductService;
-import commerce.shop.domain.product.PriceType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ public class CategoryController {
 
     @GetMapping("/minimum-prices")
     public ResponseEntity<?> categoryMinimumPrices() {
-        productService.retrieveCategoryPrices(PriceType.MINIMUM_PRICE);
-        return null;
+        return ApiResponse.success(productService.retrieveCategoryMinimumPrices())
+                .toResponseEntity();
     }
 }

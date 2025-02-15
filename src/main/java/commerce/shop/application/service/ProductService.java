@@ -25,12 +25,14 @@ public class ProductService {
     private final ProductPriceAggregator priceAggregator;
 
     @Transactional(readOnly = true)
-    public CategoryPrices retrieveCategoryPrices(PriceType priceType) {
+    public CategoryPrices retrieveCategoryMinimumPrices() {
         List<ProductPriceSummary> priceSummaries = productReader.readAllPriceSummaries();
 
         CategoryPriceAggregation aggregation = priceAggregator.aggregatePricesOfCategory(priceSummaries);
 
-        List<ProductPrice> productPrices = aggregation.allPricesOf(priceType);
+        List<ProductPrice> productPrices = aggregation.allPricesOf(PriceType.MINIMUM_PRICE);
+
+        int totalPrice = aggregation.calculateTotalPrice(PriceType.MINIMUM_PRICE);
 
         Brands brands = brandReader.readAllByIds(productPrices.stream()
                 .map(ProductPrice::brandId)
@@ -47,7 +49,7 @@ public class ProductService {
 
         return CategoryPrices.builder()
                 .prices(categoryPrices)
-                .totalPrice(aggregation.calculateTotalPrice(priceType))
+                .totalPrice(totalPrice)
                 .build();
     }
 }

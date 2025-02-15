@@ -41,7 +41,7 @@ class ProductServiceTest {
 
     @DisplayName("카테고리 별 최저가 조회")
     @Test
-    void retrieveCategoryPricesTest() {
+    void retrieveCategoryMinimumPricesTest() {
         // given
         List<ProductPriceSummary> priceSummaries = List.of(
                 new ProductPriceSummary(Category.TOP, 1L, 10000, 12000),
@@ -65,7 +65,7 @@ class ProductServiceTest {
         when(priceAggregator.aggregatePricesOfCategory(priceSummaries)).thenReturn(aggregation);
         when(brandReader.readAllByIds(Set.of(1L, 2L))).thenReturn(brands);
 
-        CategoryPrices result = productService.retrieveCategoryPrices(PriceType.MINIMUM_PRICE);
+        CategoryPrices result = productService.retrieveCategoryMinimumPrices();
 
         // then
         then(result).isNotNull();
