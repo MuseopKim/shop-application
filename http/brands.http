@@ -1,0 +1,3 @@
+### 단일 브랜드 전체 카테고리 최저가격 조회
+GET http://localhost:8080/brands/minimum-total-price
+Accept: application/json
