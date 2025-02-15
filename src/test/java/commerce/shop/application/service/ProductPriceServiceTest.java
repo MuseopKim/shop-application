@@ -9,14 +9,12 @@ import commerce.shop.application.component.aggregation.ProductPriceAggregator;
 import commerce.shop.application.component.aggregation.model.BrandCategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.CategoryPriceAggregation;
 import commerce.shop.application.component.aggregation.model.ProductPrice;
-import commerce.shop.application.service.model.BrandMinimumTotalPriceResponse;
-import commerce.shop.application.service.model.CategoryBrandPrice;
-import commerce.shop.application.service.model.CategoryMinimumPrices;
-import commerce.shop.application.service.model.CategoryPrice;
+import commerce.shop.application.service.model.*;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandReader;
 import commerce.shop.domain.brand.Brands;
 import commerce.shop.domain.category.Category;
+import commerce.shop.domain.product.PriceType;
 import commerce.shop.domain.product.ProductPriceSummary;
 import commerce.shop.domain.product.ProductReader;
 import java.util.List;
@@ -137,5 +135,49 @@ class ProductPriceServiceTest {
         then(categories.get(0).getPrice()).isEqualTo(10000);
         then(categories.get(1).getCategory()).isEqualTo(Category.OUTER);
         then(categories.get(1).getPrice()).isEqualTo(5000);
+    }
+
+    @DisplayName("카테고리의 최저가 / 최고가 브랜드와 가격을 조회한다")
+    @Test
+    void retrieveCategoryPriceRangesTest() {
+        // given
+        Category category = Category.TOP;
+
+        List<ProductPriceSummary> summaries = List.of(
+                new ProductPriceSummary(Category.TOP, 1L, 10000, 12000),
+                new ProductPriceSummary(Category.TOP, 2L, 11400, 13000)
+        );
+
+        ProductPrice minimumPrice = new ProductPrice(1L, Category.TOP, 10000);
+        ProductPrice maximumPrice = new ProductPrice(2L, Category.TOP, 11400);
+
+        CategoryPriceAggregation aggregation = mock(CategoryPriceAggregation.class);
+
+        Brands brands = Brands.of(List.of(
+                brand().id(1L).name("브랜드C").build(),
+                brand().id(2L).name("브랜드I").build()
+        ));
+
+        // when
+        when(productReader.readPriceSummaries(category)).thenReturn(summaries);
+        when(priceAggregator.aggregatePricesOfCategory(summaries)).thenReturn(aggregation);
+        when(aggregation.priceOf(category, PriceType.MINIMUM_PRICE)).thenReturn(minimumPrice);
+        when(aggregation.priceOf(category, PriceType.MAXIMUM_PRICE)).thenReturn(maximumPrice);
+        when(brandReader.readAllByIds(Set.of(1L, 2L))).thenReturn(brands);
+
+        CategoryPriceRangeResponse response = productPriceService.retrieveCategoryPriceRanges(category);
+
+        // then
+        then(response).isNotNull();
+
+        List<BrandPrice> minimumPrices = response.getMinimumPrices();
+        then(minimumPrices).hasSize(1);
+        then(minimumPrices.get(0).getBrandName()).isEqualTo("브랜드C");
+        then(minimumPrices.get(0).getPrice()).isEqualTo(10000);
+
+        List<BrandPrice> maximumPrices = response.getMaximumPrices();
+        then(maximumPrices).hasSize(1);
+        then(maximumPrices.get(0).getBrandName()).isEqualTo("브랜드I");
+        then(maximumPrices.get(0).getPrice()).isEqualTo(11400);
     }
 }

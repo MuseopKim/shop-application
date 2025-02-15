@@ -8,10 +8,12 @@ import commerce.shop.application.component.aggregation.model.ProductPrice;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandReader;
 import commerce.shop.domain.brand.Brands;
+import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.PriceType;
 import commerce.shop.domain.product.ProductPriceSummary;
 import commerce.shop.domain.product.ProductReader;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -83,6 +85,34 @@ public class ProductPriceService {
                         .categories(categoryPrices)
                         .totalPrice(totalPrice)
                         .build())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public CategoryPriceRangeResponse retrieveCategoryPriceRanges(Category category) {
+        List<ProductPriceSummary> summaries = productReader.readPriceSummaries(category);
+        if (summaries.isEmpty()) {
+            return CategoryPriceRangeResponse.EMPTY;
+        }
+
+        CategoryPriceAggregation aggregation = priceAggregator.aggregatePricesOfCategory(summaries);
+
+        ProductPrice minimumPrice = aggregation.priceOf(category, PriceType.MINIMUM_PRICE);
+        ProductPrice maximumPrice = aggregation.priceOf(category, PriceType.MAXIMUM_PRICE);
+
+        Brands brands = brandReader.readAllByIds(Set.of(minimumPrice.brandId(), maximumPrice.brandId()));
+
+        return CategoryPriceRangeResponse.builder()
+                .minimumPrices(List.of(BrandPrice.builder()
+                        .brandName(brands.findNameById(minimumPrice.brandId())
+                                .orElse("Unknown"))
+                        .price(minimumPrice.price())
+                        .build()))
+                .maximumPrices(List.of(BrandPrice.builder()
+                        .brandName(brands.findNameById(maximumPrice.brandId())
+                                .orElse("Unknown"))
+                        .price(maximumPrice.price())
+                        .build()))
                 .build();
     }
 }

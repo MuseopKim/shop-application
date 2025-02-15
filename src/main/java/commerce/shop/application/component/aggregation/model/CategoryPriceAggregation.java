@@ -21,12 +21,16 @@ public class CategoryPriceAggregation {
                 .collect(Collectors.toMap(ProductPrice::category, Function.identity())));
     }
 
-    public Optional<ProductPrice> priceOf(Category category, PriceType priceType) {
+    public ProductPrice priceOf(Category category, PriceType priceType) {
+        Function<Map<Category, ProductPrice>, ProductPrice> getPriceOfCategory =
+                prices -> Optional.ofNullable(prices.get(category))
+                        .orElseThrow(() -> new IllegalStateException("category " + category + " not exist."));
+
         if (priceType == PriceType.MINIMUM_PRICE) {
-            return Optional.ofNullable(minimumPrices.get(category));
+            return getPriceOfCategory.apply(minimumPrices);
         }
 
-        return Optional.ofNullable(maximumPrices.get(category));
+        return getPriceOfCategory.apply(maximumPrices);
     }
 
     public List<ProductPrice> allPricesOf(PriceType priceType) {

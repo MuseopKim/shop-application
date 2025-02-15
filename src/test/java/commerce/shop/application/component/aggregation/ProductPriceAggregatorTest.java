@@ -48,10 +48,10 @@ class ProductPriceAggregatorTest {
         CategoryPriceAggregation aggregation = aggregator.aggregatePricesOfCategory(prices);
 
         // then
-        ProductPrice topProductMinimumPrice = aggregation.priceOf(Category.TOP, PriceType.MINIMUM_PRICE).orElseThrow();
-        ProductPrice topProductMaximumPrice = aggregation.priceOf(Category.TOP, PriceType.MAXIMUM_PRICE).orElseThrow();
-        ProductPrice outerProductMinimumPrice = aggregation.priceOf(Category.OUTER, PriceType.MINIMUM_PRICE).orElseThrow();
-        ProductPrice outerProductMaximumPrice = aggregation.priceOf(Category.OUTER, PriceType.MAXIMUM_PRICE).orElseThrow();
+        ProductPrice topProductMinimumPrice = aggregation.priceOf(Category.TOP, PriceType.MINIMUM_PRICE);
+        ProductPrice topProductMaximumPrice = aggregation.priceOf(Category.TOP, PriceType.MAXIMUM_PRICE);
+        ProductPrice outerProductMinimumPrice = aggregation.priceOf(Category.OUTER, PriceType.MINIMUM_PRICE);
+        ProductPrice outerProductMaximumPrice = aggregation.priceOf(Category.OUTER, PriceType.MAXIMUM_PRICE);
 
         then(topProductMinimumPrice.brandId()).isEqualTo(topMinimumPriceBrandId);
         then(topProductMinimumPrice.price()).isEqualTo(topMinimumPrice);
