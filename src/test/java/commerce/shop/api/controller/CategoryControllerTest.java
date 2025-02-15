@@ -1,15 +1,16 @@
 package commerce.shop.api.controller;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import commerce.shop.application.service.model.CategoryBrandPrice;
 import commerce.shop.api.controller.model.CategoryMinimumPricesPayload;
+import commerce.shop.api.controller.model.CategoryPriceRangePayload;
 import commerce.shop.application.service.ProductPriceService;
+import commerce.shop.application.service.model.BrandPrice;
+import commerce.shop.application.service.model.CategoryBrandPrice;
 import commerce.shop.domain.category.Category;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +34,7 @@ class CategoryControllerTest {
     @Test
     void categoryMinimumPricesTest() throws Exception {
         // given
-        CategoryMinimumPricesPayload expectedResponse = CategoryMinimumPricesPayload.builder()
+        CategoryMinimumPricesPayload expectedPayload = CategoryMinimumPricesPayload.builder()
                 .prices(List.of(
                         CategoryBrandPrice.builder()
                                 .category(Category.TOP)
@@ -50,7 +51,7 @@ class CategoryControllerTest {
                 .build();
 
         given(productPriceService.retrieveCategoryMinimumPrices())
-                .willReturn(expectedResponse);
+                .willReturn(expectedPayload);
 
         // then
         mockMvc.perform(get("/categories/minimum-prices")
@@ -66,5 +67,44 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.payload.prices[1].brandName").value("E"))
                 .andExpect(jsonPath("$.payload.prices[1].price").value(5000))
                 .andExpect(jsonPath("$.payload.totalPrice").value(15000));
+    }
+
+    @DisplayName("카테고리 별 최저 / 최고 가격 범위 조회 API")
+    @Test
+    void categoryPriceRangesTest() throws Exception {
+        // given
+        Category category = Category.TOP;
+
+        CategoryPriceRangePayload expectedPayload = CategoryPriceRangePayload.builder()
+                .category(category)
+                .minimumPrices(List.of(
+                        BrandPrice.builder()
+                                .brandName("C")
+                                .price(10000)
+                                .build()
+                ))
+                .maximumPrices(List.of(
+                        BrandPrice.builder()
+                                .brandName("I")
+                                .price(11400)
+                                .build()
+                ))
+                .build();
+
+        given(productPriceService.retrieveCategoryPriceRanges(category))
+                .willReturn(expectedPayload);
+
+        // then
+        mockMvc.perform(get("/categories/{category}/price-ranges", category)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.message").value("성공"))
+                .andExpect(jsonPath("$.payload.category").value(category.name()))
+                .andExpect(jsonPath("$.payload.minimumPrices[0].brandName").value("C"))
+                .andExpect(jsonPath("$.payload.minimumPrices[0].price").value(10000))
+                .andExpect(jsonPath("$.payload.maximumPrices[0].brandName").value("I"))
+                .andExpect(jsonPath("$.payload.maximumPrices[0].price").value(11400));
     }
 }

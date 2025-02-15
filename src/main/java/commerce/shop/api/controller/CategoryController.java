@@ -25,6 +25,6 @@ public class CategoryController {
 
     @GetMapping("/{category}/price-ranges")
     public ResponseEntity<?> categoryPriceRanges(@PathVariable Category category) {
-        return null;
+        return ApiResponse.success(productPriceService.retrieveCategoryPriceRanges(category)).toResponseEntity();
     }
 }

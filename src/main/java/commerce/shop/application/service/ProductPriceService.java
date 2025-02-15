@@ -106,6 +106,7 @@ public class ProductPriceService {
         Brands brands = brandReader.readAllByIds(Set.of(minimumPrice.brandId(), maximumPrice.brandId()));
 
         return CategoryPriceRangePayload.builder()
+                .category(category)
                 .minimumPrices(List.of(BrandPrice.builder()
                         .brandName(brands.findNameById(minimumPrice.brandId())
                                 .orElse("Unknown"))
