@@ -1,4 +1,4 @@
-package commerce.shop.global.config;
+package commerce.shop.global.config.web;
 
 import commerce.shop.global.converter.StringToCategoryConverter;
 import org.springframework.context.annotation.Configuration;
