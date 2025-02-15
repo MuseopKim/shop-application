@@ -78,7 +78,7 @@ class ProductPriceServiceTest {
         then(result.getTotalPrice()).isEqualTo(15000);
         then(result.getPrices()).hasSize(2);
 
-        CategoryBrandPrice firstPrice = result.getPrices().get(0);
+        PriceWithCategoryAndBrand firstPrice = result.getPrices().get(0);
         then(firstPrice.getCategory()).isEqualTo(Category.TOP);
         then(firstPrice.getBrandName()).isEqualTo("브랜드A");
         then(firstPrice.getPrice()).isEqualTo(10000);
@@ -133,7 +133,7 @@ class ProductPriceServiceTest {
         then(response.getMinimumPrice().getTotalPrice()).isEqualTo(34500);
         then(response.getMinimumPrice().getCategories()).hasSize(8);
 
-        List<CategoryPrice> categories = response.getMinimumPrice().getCategories();
+        List<PriceWithCategory> categories = response.getMinimumPrice().getCategories();
         then(categories.get(0).getCategory()).isEqualTo(Category.TOP);
         then(categories.get(0).getPrice()).isEqualTo(10000);
         then(categories.get(1).getCategory()).isEqualTo(Category.OUTER);
@@ -173,12 +173,12 @@ class ProductPriceServiceTest {
         // then
         then(response).isNotNull();
 
-        List<BrandPrice> minimumPrices = response.getMinimumPrices();
+        List<PriceWithBrand> minimumPrices = response.getMinimumPrices();
         then(minimumPrices).hasSize(1);
         then(minimumPrices.get(0).getBrandName()).isEqualTo("브랜드C");
         then(minimumPrices.get(0).getPrice()).isEqualTo(10000);
 
-        List<BrandPrice> maximumPrices = response.getMaximumPrices();
+        List<PriceWithBrand> maximumPrices = response.getMaximumPrices();
         then(maximumPrices).hasSize(1);
         then(maximumPrices.get(0).getBrandName()).isEqualTo("브랜드I");
         then(maximumPrices.get(0).getPrice()).isEqualTo(11400);

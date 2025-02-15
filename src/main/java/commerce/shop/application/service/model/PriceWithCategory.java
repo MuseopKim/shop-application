@@ -6,9 +6,8 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CategoryBrandPrice {
+public class PriceWithCategory {
 
     private final Category category;
-    private final String brandName;
     private final int price;
 }

@@ -44,8 +44,8 @@ public class ProductPriceService {
                 .map(ProductPrice::brandId)
                 .collect(Collectors.toSet()));
 
-        List<CategoryBrandPrice> categoryBrandPrices = productPrices.stream()
-                .map(productPrice -> CategoryBrandPrice.builder()
+        List<PriceWithCategoryAndBrand> categoryBrandPrices = productPrices.stream()
+                .map(productPrice -> PriceWithCategoryAndBrand.builder()
                         .category(productPrice.category())
                         .brandName(brands.findNameById(productPrice.brandId())
                                 .orElse("Unknown"))
@@ -75,8 +75,8 @@ public class ProductPriceService {
 
         int totalPrice = aggregation.calculateMinimumTotalPriceOf(minimumPriceBrandId);
 
-        List<CategoryPrice> categoryPrices = prices.stream()
-                .map(productPrice -> CategoryPrice.builder()
+        List<PriceWithCategory> categoryPrices = prices.stream()
+                .map(productPrice -> PriceWithCategory.builder()
                         .category(productPrice.category())
                         .price(productPrice.price())
                         .build())
@@ -107,12 +107,12 @@ public class ProductPriceService {
 
         return CategoryPriceRangePayload.builder()
                 .category(category)
-                .minimumPrices(List.of(BrandPrice.builder()
+                .minimumPrices(List.of(PriceWithBrand.builder()
                         .brandName(brands.findNameById(minimumPrice.brandId())
                                 .orElse("Unknown"))
                         .price(minimumPrice.price())
                         .build()))
-                .maximumPrices(List.of(BrandPrice.builder()
+                .maximumPrices(List.of(PriceWithBrand.builder()
                         .brandName(brands.findNameById(maximumPrice.brandId())
                                 .orElse("Unknown"))
                         .price(maximumPrice.price())

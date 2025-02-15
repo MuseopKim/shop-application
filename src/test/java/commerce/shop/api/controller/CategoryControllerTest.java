@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import commerce.shop.api.controller.model.CategoryMinimumPricesPayload;
 import commerce.shop.api.controller.model.CategoryPriceRangePayload;
 import commerce.shop.application.service.ProductPriceService;
-import commerce.shop.application.service.model.BrandPrice;
-import commerce.shop.application.service.model.CategoryBrandPrice;
+import commerce.shop.application.service.model.PriceWithBrand;
+import commerce.shop.application.service.model.PriceWithCategoryAndBrand;
 import commerce.shop.domain.category.Category;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -36,12 +36,12 @@ class CategoryControllerTest {
         // given
         CategoryMinimumPricesPayload expectedPayload = CategoryMinimumPricesPayload.builder()
                 .prices(List.of(
-                        CategoryBrandPrice.builder()
+                        PriceWithCategoryAndBrand.builder()
                                 .category(Category.TOP)
                                 .brandName("C")
                                 .price(10000)
                                 .build(),
-                        CategoryBrandPrice.builder()
+                        PriceWithCategoryAndBrand.builder()
                                 .category(Category.OUTER)
                                 .brandName("E")
                                 .price(5000)
@@ -78,13 +78,13 @@ class CategoryControllerTest {
         CategoryPriceRangePayload expectedPayload = CategoryPriceRangePayload.builder()
                 .category(category)
                 .minimumPrices(List.of(
-                        BrandPrice.builder()
+                        PriceWithBrand.builder()
                                 .brandName("C")
                                 .price(10000)
                                 .build()
                 ))
                 .maximumPrices(List.of(
-                        BrandPrice.builder()
+                        PriceWithBrand.builder()
                                 .brandName("I")
                                 .price(11400)
                                 .build()

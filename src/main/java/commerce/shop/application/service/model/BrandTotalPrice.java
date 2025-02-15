@@ -9,6 +9,6 @@ import lombok.Getter;
 public class BrandTotalPrice {
 
     private final String brandName;
-    private final List<CategoryPrice> categories;
+    private final List<PriceWithCategory> categories;
     private final int totalPrice;
 }
