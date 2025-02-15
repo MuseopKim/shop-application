@@ -9,7 +9,9 @@ import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandRepository;
 import commerce.shop.domain.category.Category;
 import commerce.shop.jpa.DataJpaTest;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -51,5 +53,40 @@ class ProductRepositoryTest extends DataJpaTest {
         then(summary.category()).isEqualTo(Category.OUTER);
         then(summary.maximumPrice()).isEqualTo(maximumPriceProduct.getPrice());
         then(summary.minimumPrice()).isEqualTo(minimumPriceProduct.getPrice());
+    }
+
+    @Test
+    void findAllProductPricesGroupByBrandAndCategoryWithSpecificCategoryTest() {
+        // given
+        Brand brand = brandRepository.save(brand().build());
+
+        Product outerProduct = productRepository.save(product()
+                .category(Category.OUTER)
+                .brand(brand)
+                .price(10000)
+                .build());
+
+        productRepository.save(product()
+                .category(Category.TOP)
+                .brand(brand)
+                .price(5000)
+                .build());
+
+        // when
+        List<ProductPriceSummary> summaries = productRepository.findAllProductPricesGroupByBrandAndCategory(Category.OUTER)
+                .stream()
+                .filter(price -> Objects.equals(price.brandId(), brand.getId()))
+                .toList();
+
+        // then
+        then(summaries.size()).isOne();
+
+        ProductPriceSummary summary = summaries.stream()
+                .findFirst()
+                .orElseThrow();
+
+        then(summary.category()).isEqualTo(Category.OUTER);
+        then(summary.maximumPrice()).isEqualTo(outerProduct.getPrice());
+        then(summary.minimumPrice()).isEqualTo(outerProduct.getPrice());
     }
 }
