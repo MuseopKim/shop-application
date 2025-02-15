@@ -5,8 +5,8 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.Mockito.when;
 
-import commerce.shop.application.service.model.BrandMutationCommand;
 import commerce.shop.api.controller.model.BrandPayload;
+import commerce.shop.application.service.model.BrandMutationCommand;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandWriter;
 import commerce.shop.domain.product.ProductReader;
@@ -91,7 +91,7 @@ class BrandServiceTest {
 
         when(productReader.exists(brandId)).thenReturn(true);
 
-        // when & then
+        // when / then
         thenThrownBy(() -> brandService.removeBrand(brandId))
                 .isInstanceOf(RuntimeException.class);
     }

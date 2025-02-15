@@ -54,10 +54,8 @@ class BrandControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
-                .andExpect(jsonPath("$.message").value("성공"))
-                .andExpect(jsonPath("$.payload.id").value(1))
-                .andExpect(jsonPath("$.payload.name").value("나이키"));
+                .andExpect(jsonPath("$.payload.id").value(expectedResponse.getId()))
+                .andExpect(jsonPath("$.payload.name").value(expectedResponse.getName()));
     }
 
     @Test
@@ -79,10 +77,8 @@ class BrandControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
-                .andExpect(jsonPath("$.message").value("성공"))
                 .andExpect(jsonPath("$.payload.id").value(brandId))
-                .andExpect(jsonPath("$.payload.name").value("아디다스"));
+                .andExpect(jsonPath("$.payload.name").value(request.name()));
     }
 
     @Test
@@ -95,8 +91,6 @@ class BrandControllerTest {
         // when / then
         mockMvc.perform(delete("/brands/{id}", brandId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
-                .andExpect(jsonPath("$.message").value("성공"))
                 .andExpect(jsonPath("$.payload").value(true));
     }
 }

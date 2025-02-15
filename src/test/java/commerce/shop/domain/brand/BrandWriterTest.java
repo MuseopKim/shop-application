@@ -73,7 +73,7 @@ class BrandWriterTest {
 
         when(brandRepository.findById(brandId)).thenReturn(Optional.empty());
 
-        // when & then
+        // when / then
         thenThrownBy(() -> brandWriter.update(brandId, command))
                 .isInstanceOf(RuntimeException.class);
     }

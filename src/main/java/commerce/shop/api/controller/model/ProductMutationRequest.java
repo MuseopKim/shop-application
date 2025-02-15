@@ -1,5 +1,6 @@
 package commerce.shop.api.controller.model;
 
+import commerce.shop.application.service.model.ProductMutationCommand;
 import commerce.shop.domain.category.Category;
 import commerce.shop.global.constant.ValidationMessage;
 import jakarta.validation.constraints.Min;
@@ -24,5 +25,8 @@ public record ProductMutationRequest(
         Integer price
 ) {
 
+    public ProductMutationCommand toCommand() {
+        return new ProductMutationCommand(brandId, category, name, price);
+    }
 }
 

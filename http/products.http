@@ -1,0 +1,26 @@
+### 상품 등록
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "brandId": 1,
+  "category": "TOP",
+  "name": "기본 티셔츠",
+  "price": 10000
+}
+
+> {% client.global.set("productId", response.body.payload.id); %}
+
+### 상품 수정
+PUT http://localhost:8080/products/{{productId}}
+Content-Type: application/json
+
+{
+  "brandId": 1,
+  "category": "TOP",
+  "name": "프리미엄 티셔츠",
+  "price": 20000
+}
+
+### 상품 삭제
+DELETE http://localhost:8080/products/{{productId}}
