@@ -21,4 +21,9 @@ public class BrandReader {
     public Optional<Brand> readById(long id) {
         return brandRepository.findById(id);
     }
+
+    public Brand getById(long id) {
+        return brandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException());
+    }
 }
