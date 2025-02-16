@@ -17,5 +17,5 @@ CREATE TABLE product
     updated_at DATETIME     NOT NULL COMMENT '수정일'
 );
 
-CREATE INDEX `idx_product_category_price_brand` ON product (`category`, `price`, `brand_id`);
+CREATE INDEX `idx_product_category_brand_price` ON product (`category`, `brand_id`, `price`);
 CREATE INDEX `idx_product_brand_id` ON product (`brand_id`);
