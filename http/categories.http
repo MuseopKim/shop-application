@@ -1,4 +1,4 @@
-### 1. 카테고리 별 최저 가격 브랜드 및 가격 조회
+### 카테고리 별 최저 가격 브랜드 및 가격 조회
 GET http://localhost:8080/categories/minimum-prices
 Accept: application/json
 
