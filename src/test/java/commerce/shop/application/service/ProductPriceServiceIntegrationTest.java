@@ -7,18 +7,15 @@ import static org.mockito.Mockito.verify;
 import commerce.shop.api.controller.model.BrandMinimumTotalPricePayload;
 import commerce.shop.api.controller.model.CategoryMinimumPricesPayload;
 import commerce.shop.api.controller.model.CategoryPriceRangePayload;
+import commerce.shop.cache.IntegrationTest;
 import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.ProductReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@SpringBootTest
-class ProductPriceServiceIntegrationTest {
+class ProductPriceServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private ProductPriceService productPriceService;

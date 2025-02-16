@@ -12,6 +12,11 @@ public class ProductReader {
 
     private final ProductRepository productRepository;
 
+    public Product getById(long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException());
+    }
+
     public List<ProductPriceSummary> readAllPriceSummaries() {
         return productRepository.findAllProductPricesGroupByBrandAndCategory();
     }

@@ -7,11 +7,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import commerce.shop.api.controller.model.ProductPayload;
+import commerce.shop.application.component.event.ProductEventPublisher;
 import commerce.shop.application.service.model.ProductMutationCommand;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandReader;
 import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.Product;
+import commerce.shop.domain.product.ProductReader;
 import commerce.shop.domain.product.ProductWriter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,13 @@ class ProductServiceTest {
     private ProductWriter productWriter;
 
     @Mock
+    private ProductReader productReader;
+
+    @Mock
     private BrandReader brandReader;
+
+    @Mock
+    private ProductEventPublisher eventPublisher;
 
     @InjectMocks
     private ProductService productService;
@@ -104,6 +112,9 @@ class ProductServiceTest {
     void removeProduct() {
         // given
         long productId = 1L;
+        Product product = product().id(productId).build();
+
+        when(productReader.getById(productId)).thenReturn(product);
         when(productWriter.delete(productId)).thenReturn(true);
 
         // when

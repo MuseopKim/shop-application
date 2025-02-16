@@ -58,7 +58,7 @@ public class CacheStorage {
         }
     }
 
-    public void remove(String key) {
+    public void evict(String key) {
         try {
             cache.invalidate(key);
         } catch (Exception e) {

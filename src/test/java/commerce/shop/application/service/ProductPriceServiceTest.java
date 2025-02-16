@@ -80,10 +80,14 @@ class ProductPriceServiceTest {
         then(result.getTotalPrice()).isEqualTo(15000);
         then(result.getPrices()).hasSize(2);
 
-        PriceWithCategoryAndBrand firstPrice = result.getPrices().get(0);
-        then(firstPrice.getCategory()).isEqualTo(Category.TOP);
-        then(firstPrice.getBrandName()).isEqualTo("브랜드A");
-        then(firstPrice.getPrice()).isEqualTo(10000);
+        PriceWithCategoryAndBrand outerPrice =
+                result.getPrices().stream()
+                        .filter(price -> price.getCategory() == Category.OUTER)
+                        .findFirst()
+                        .get();
+        
+        then(outerPrice.getBrandName()).isEqualTo("브랜드B");
+        then(outerPrice.getPrice()).isEqualTo(5000);
     }
 
     @DisplayName("브랜드별 전체 카테고리 최저가를 조회한다")

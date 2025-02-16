@@ -2,16 +2,13 @@ package commerce.shop.application.component.cache;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
+import commerce.shop.cache.IntegrationTest;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@SpringBootTest
-class CacheStorageTest {
+class CacheStorageTest extends IntegrationTest {
 
     @Autowired
     private CacheStorage cacheStorage;
@@ -100,14 +97,14 @@ class CacheStorageTest {
 
     @DisplayName("캐시에서 값을 제거한다")
     @Test
-    void removeDeletesValueFromCacheTest() {
+    void evictDeletesValueFromCacheTest() {
         // given
         String key = String.format(CacheKey.CATEGORY_PRICE_RANGE, "TOP");
         PriceResponse value = new PriceResponse("brandA", 10000);
         cacheStorage.set(key, value);
 
         // when
-        cacheStorage.remove(key);
+        cacheStorage.evict(key);
 
         // then
         Optional<PriceResponse> result = cacheStorage.get(key, PriceResponse.class);
