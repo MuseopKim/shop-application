@@ -77,6 +77,42 @@ CREATE INDEX `idx_product_brand_id` ON product (`brand_id`);
 ### 설계 고려사항
 
 - 카테고리, 브랜드 별 가격 조회가 빈번하게 발생할 것으로 예상하여 복합 인덱스`(category, price, brand_id)` 구성
+```sql
+-- 카테고리 / 브랜드 별 최저, 최고 가격 조회
+SELECT category,
+       brand_id,
+       MIN(price),
+       MAX(price)
+FROM product
+GROUP BY category, brand_id;
+/**
+[실행 계획]
++--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+----------------------------+
+|id|select_type|table  |partitions|type |possible_keys                   |key                             |key_len|ref |rows|filtered|Extra                       |
++--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+----------------------------+
+|1 |SIMPLE     |product|null      |index|idx_product_category_price_brand|idx_product_category_price_brand|214    |null|1   |100     |Using index; Using temporary|
++--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+----------------------------+
+ */
+
+-- 카테고리를 특정하여 최저, 최고 가격 조회
+EXPLAIN
+SELECT category,
+       brand_id,
+       MIN(price),
+       MAX(price)
+FROM product
+WHERE category = 'TOP'
+GROUP BY category, brand_id;
+/**
+[실행 계획]
++--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+----------------------------+
+|id|select_type|table  |partitions|type|possible_keys                   |key                             |key_len|ref  |rows|filtered|Extra                       |
++--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+----------------------------+
+|1 |SIMPLE     |product|null      |ref |idx_product_category_price_brand|idx_product_category_price_brand|202    |const|1   |100     |Using index; Using temporary|
++--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+----------------------------+
+ */
+
+```
 - 브랜드 별 상품 조회를 위한 `brand_id` 인덱스 구성
 - 조회 성능을 고려하여 ETL, 배치 작업을 통해 별도의 `집계 테이블`(카테고리별 최저 / 최고가, 브랜드별 총액 등) 구성을 고려 하였으나,
   캐시 사용으로 대체
@@ -162,7 +198,7 @@ Implementation Layer
 
 ##### Request
 
-```bash
+```shell
 curl -X GET http://localhost:8080/categories/minimum-prices \
    -H 'Accept: application/json'
 ```
@@ -220,7 +256,7 @@ curl -X GET http://localhost:8080/categories/minimum-prices \
 
 ##### Request
 
-```bash
+```shell
 curl -X GET http://localhost:8080/brands/minimum-total-price \
     -H 'Accept: application/json'
 ```
@@ -276,7 +312,7 @@ curl -X GET http://localhost:8080/brands/minimum-total-price \
 
 ### 3. 특정 카테고리 최저, 최고 가격 브랜드 및 가격 조회
 
-```bash
+```shell
 curl -X GET http://localhost:8080/categories/pants/price-ranges \
 -H 'Content-Type: application/json'
 ```
@@ -307,7 +343,7 @@ curl -X GET http://localhost:8080/categories/pants/price-ranges \
 
 ##### Request
 
-```bash
+```shell
 curl -X POST http://localhost:8080/brands \
     -H 'Content-Type: application/json' \
     -d '{
@@ -332,7 +368,7 @@ curl -X POST http://localhost:8080/brands \
 
 ##### Request
 
-```bash
+```shell
 curl -X PUT http://localhost:8080/brands/1 \
   -H 'Content-Type: application/json' \
   -d '{
@@ -357,7 +393,7 @@ curl -X PUT http://localhost:8080/brands/1 \
 
 ##### Request
 
-```bash
+```shell
 curl -X DELETE http://localhost:8080/brands/1
 ```
 
@@ -375,7 +411,7 @@ curl -X DELETE http://localhost:8080/brands/1
 
 ##### Request
 
-```bash
+```shell
 curl -X POST http://localhost:8080/products \
   -H 'Content-Type: application/json' \
   -d '{
@@ -407,7 +443,7 @@ curl -X POST http://localhost:8080/products \
 
 ##### Request
 
-```bash
+```shell
 curl -X PUT http://localhost:8080/products/1 \
   -H 'Content-Type: application/json' \
   -d '{
@@ -439,7 +475,7 @@ curl -X PUT http://localhost:8080/products/1 \
 
 ##### Request
 
-```bash
+```shell
 curl -X DELETE http://localhost:8080/products/1
 ```
 
