@@ -70,13 +70,13 @@ CREATE TABLE product
     updated_at DATETIME     NOT NULL COMMENT '수정일'
 );
 
-CREATE INDEX `idx_product_category_price_brand` ON product (`category`, `price`, `brand_id`);
+CREATE INDEX `idx_product_category_price_brand` ON product (`category`, `brand_id`, `price`);
 CREATE INDEX `idx_product_brand_id` ON product (`brand_id`);
 ```
 
 ### 설계 고려사항
 
-- 카테고리, 브랜드 별 가격 조회가 빈번하게 발생할 것으로 예상하여 복합 인덱스`(category, price, brand_id)` 구성
+- 카테고리, 브랜드 별 가격 조회가 빈번하게 발생할 것으로 예상하여 커버링 인덱스를 위한 복합 인덱스`(category, price, brand_id)` 구성
 ```sql
 -- 카테고리 / 브랜드 별 최저, 최고 가격 조회
 SELECT category,
@@ -87,15 +87,14 @@ FROM product
 GROUP BY category, brand_id;
 /**
 [실행 계획]
-+--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+----------------------------+
-|id|select_type|table  |partitions|type |possible_keys                   |key                             |key_len|ref |rows|filtered|Extra                       |
-+--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+----------------------------+
-|1 |SIMPLE     |product|null      |index|idx_product_category_price_brand|idx_product_category_price_brand|214    |null|1   |100     |Using index; Using temporary|
-+--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+----------------------------+
++--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+-----------+
+|id|select_type|table  |partitions|type |possible_keys                   |key                             |key_len|ref |rows|filtered|Extra      |
++--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+-----------+
+|1 |SIMPLE     |product|null      |index|idx_product_category_brand_price|idx_product_category_brand_price|214    |null|1   |100     |Using index|
++--+-----------+-------+----------+-----+--------------------------------+--------------------------------+-------+----+----+--------+-----------+
  */
 
--- 카테고리를 특정하여 최저, 최고 가격 조회
-EXPLAIN
+-- 카테고리를 특정하여 카테고리 / 브랜드 최저, 최고 가격 조회
 SELECT category,
        brand_id,
        MIN(price),
@@ -105,11 +104,11 @@ WHERE category = 'TOP'
 GROUP BY category, brand_id;
 /**
 [실행 계획]
-+--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+----------------------------+
-|id|select_type|table  |partitions|type|possible_keys                   |key                             |key_len|ref  |rows|filtered|Extra                       |
-+--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+----------------------------+
-|1 |SIMPLE     |product|null      |ref |idx_product_category_price_brand|idx_product_category_price_brand|202    |const|1   |100     |Using index; Using temporary|
-+--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+----------------------------+
++--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+-----------+
+|id|select_type|table  |partitions|type|possible_keys                   |key                             |key_len|ref  |rows|filtered|Extra      |
++--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+-----------+
+|1 |SIMPLE     |product|null      |ref |idx_product_category_brand_price|idx_product_category_brand_price|202    |const|1   |100     |Using index|
++--+-----------+-------+----------+----+--------------------------------+--------------------------------+-------+-----+----+--------+-----------+
  */
 
 ```
