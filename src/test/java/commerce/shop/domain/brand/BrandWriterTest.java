@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import commerce.shop.application.service.model.BrandMutationCommand;
+import commerce.shop.global.exception.BrandException;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,6 @@ class BrandWriterTest {
 
         // when / then
         thenThrownBy(() -> brandWriter.update(brandId, command))
-                .isInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(BrandException.class);
     }
 }

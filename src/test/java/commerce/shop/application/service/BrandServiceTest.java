@@ -10,6 +10,7 @@ import commerce.shop.application.service.model.BrandMutationCommand;
 import commerce.shop.domain.brand.Brand;
 import commerce.shop.domain.brand.BrandWriter;
 import commerce.shop.domain.product.ProductReader;
+import commerce.shop.global.exception.BrandException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -93,6 +94,6 @@ class BrandServiceTest {
 
         // when / then
         thenThrownBy(() -> brandService.removeBrand(brandId))
-                .isInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(BrandException.class);
     }
 }

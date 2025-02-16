@@ -15,6 +15,7 @@ import commerce.shop.application.service.ProductService;
 import commerce.shop.application.service.model.ProductMutationCommand;
 import commerce.shop.cache.IntegrationTest;
 import commerce.shop.domain.category.Category;
+import commerce.shop.global.exception.ProductException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ class ProductEventIntegrationTest extends IntegrationTest {
         long nonExistentProductId = 999L;
 
         thenThrownBy(() -> productService.removeProduct(nonExistentProductId))
-                .isExactlyInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(ProductException.class);
 
         verify(eventListener, never()).handle(any());
     }
