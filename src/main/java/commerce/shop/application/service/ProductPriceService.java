@@ -20,6 +20,8 @@ import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.PriceType;
 import commerce.shop.domain.product.ProductPriceSummary;
 import commerce.shop.domain.product.ProductReader;
+import commerce.shop.global.exception.ApiExceptionCode;
+import commerce.shop.global.exception.BrandException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -91,7 +93,7 @@ public class ProductPriceService {
         long minimumPriceBrandId = aggregation.minimumTotalPriceBrandId();
 
         Brand brand = brandReader.readById(minimumPriceBrandId)
-                .orElseThrow(() -> new RuntimeException("Brand not found"));
+                .orElseThrow(() -> new BrandException(ApiExceptionCode.BRAND_NOT_EXIST));
 
         List<ProductPrice> prices = aggregation.minimumPricesOf(minimumPriceBrandId);
 

@@ -2,6 +2,8 @@ package commerce.shop.application.component.aggregation.model;
 
 import commerce.shop.domain.category.Category;
 import commerce.shop.domain.product.PriceType;
+import commerce.shop.global.exception.ApiExceptionCode;
+import commerce.shop.global.exception.CategoryException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,7 +26,7 @@ public class CategoryPriceAggregation {
     public ProductPrice priceOf(Category category, PriceType priceType) {
         Function<Map<Category, ProductPrice>, ProductPrice> getPriceOfCategory =
                 prices -> Optional.ofNullable(prices.get(category))
-                        .orElseThrow(() -> new IllegalStateException("category " + category + " not exist."));
+                        .orElseThrow(() -> new CategoryException(ApiExceptionCode.CATEGORY_NOT_EXIST));
 
         if (priceType == PriceType.MINIMUM_PRICE) {
             return getPriceOfCategory.apply(minimumPrices);

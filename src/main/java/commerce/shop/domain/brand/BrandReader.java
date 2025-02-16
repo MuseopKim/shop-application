@@ -1,5 +1,7 @@
 package commerce.shop.domain.brand;
 
+import commerce.shop.global.exception.ApiExceptionCode;
+import commerce.shop.global.exception.BrandException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,6 @@ public class BrandReader {
 
     public Brand getById(long id) {
         return brandRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new BrandException(ApiExceptionCode.BRAND_NOT_EXIST));
     }
 }

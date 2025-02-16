@@ -2,6 +2,8 @@ package commerce.shop.domain.product;
 
 import commerce.shop.application.service.model.ProductMutationCommand;
 import commerce.shop.domain.brand.Brand;
+import commerce.shop.global.exception.ApiExceptionCode;
+import commerce.shop.global.exception.ProductException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class ProductWriter {
     @Transactional
     public Product update(long id, Brand brand, ProductMutationCommand command) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ProductException(ApiExceptionCode.PRODUCT_NOT_EXIST));
 
         return product.update(command.name(), brand, command.category(), command.price());
     }
@@ -33,7 +35,7 @@ public class ProductWriter {
     @Transactional
     public boolean delete(long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ProductException(ApiExceptionCode.PRODUCT_NOT_EXIST));
 
         productRepository.delete(product);
 
