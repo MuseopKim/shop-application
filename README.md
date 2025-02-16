@@ -153,7 +153,8 @@ Implementation Layer
 ## 조회 성능 개선 전략
 
 - 요청마다 모든 상품 가격 집계가 필요한 고비용성을 고려하여 캐시 사용한 성능 최적화
-- 캐시는 별도 인프라 구성을 하지 않기 위해 Local Cache(`Caffeine Cache`)로 대체 (고도화 시 Redis와 같은 글로벌 캐시 사용 고려)
+- 캐시는 별도 인프라 구성을 하지 않기 위해 Local Cache(`Caffeine Cache`)로 대체 
+- 고도화 시 Redis와 같은 글로벌 캐시 사용 고려
 
 ### Cache Eviction
 
@@ -180,7 +181,8 @@ Implementation Layer
   "code": "SUCCESS",
   "message": "성공",
   "payload": {
-    // response payload
+    "id": 1,
+    "name": "브랜드"
   }
 }
 ```
