@@ -14,7 +14,7 @@ CREATE TABLE product
     id         BIGINT       NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '-',
     brand_id   BIGINT       NOT NULL,
     category   VARCHAR(50)  NOT NULL,
-    name       VARCHAR(200) NOT NULL,
+    name       VARCHAR(100) NOT NULL,
     price      INTEGER      NOT NULL,
     created_at DATETIME     NOT NULL COMMENT '생성일',
     updated_at DATETIME     NOT NULL COMMENT '수정일'
