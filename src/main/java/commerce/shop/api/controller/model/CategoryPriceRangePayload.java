@@ -2,6 +2,7 @@ package commerce.shop.api.controller.model;
 
 import commerce.shop.application.service.model.PriceWithBrand;
 import commerce.shop.domain.category.Category;
+import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,11 @@ import lombok.Getter;
 @Builder
 public class CategoryPriceRangePayload {
 
-    public static final CategoryPriceRangePayload EMPTY = CategoryPriceRangePayload.builder().build();
+    public static final CategoryPriceRangePayload EMPTY =
+            CategoryPriceRangePayload.builder()
+                    .minimumPrices(Collections.emptyList())
+                    .maximumPrices(Collections.emptyList())
+                    .build();
 
     private final Category category;
     private final List<PriceWithBrand> minimumPrices;

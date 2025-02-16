@@ -17,6 +17,9 @@ public class BrandController {
     private final BrandService brandService;
     private final ProductPriceService productPriceService;
 
+    /**
+     * 단일 브랜드 전체 카테고리 상품 구매 시 최저 가격 브랜드, 총액 조회
+     */
     @GetMapping("/minimum-total-price")
     public ResponseEntity<?> minimumTotalPrices() {
         return ApiResponse.success(productPriceService.retrieveBrandMinimumTotalPrice()).toResponseEntity();

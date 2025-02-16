@@ -8,6 +8,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * 카테고리별 최저/최고 가격을 집계하는 객체입니다.
+ * 각 카테고리의 최저/최고 가격과 브랜드 정보를 보관하고,
+ * 전체 카테고리의 가격을 집계하여 총액을 계산합니다.
+ */
 public class CategoryPriceAggregation {
 
     private final Map<Category, ProductPrice> minimumPrices;

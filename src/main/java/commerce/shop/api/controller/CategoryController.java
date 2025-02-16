@@ -17,12 +17,18 @@ public class CategoryController {
 
     private final ProductPriceService productPriceService;
 
+    /**
+     * 카테고리 별 최저 가격 브랜드 조회
+     */
     @GetMapping("/minimum-prices")
     public ResponseEntity<?> categoryMinimumPrices() {
         return ApiResponse.success(productPriceService.retrieveCategoryMinimumPrices())
                 .toResponseEntity();
     }
 
+    /**
+     * 특정 카테고리 최저, 최고 가격 브랜드 및 가격 조회
+     */
     @GetMapping("/{category}/price-ranges")
     public ResponseEntity<?> categoryPriceRanges(@PathVariable Category category) {
         return ApiResponse.success(productPriceService.retrieveCategoryPriceRanges(category)).toResponseEntity();

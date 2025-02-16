@@ -12,11 +12,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
+/**
+ * 상품 가격 데이터를 다양한 관점에서 집계하는 컴포넌트입니다.
+ *
+ * 조회된 가격 정보({@link ProductPriceSummary})를 기반으로 다음과 같은 집계를 수행합니다.
+ * 카테고리별 최저/최고 가격 집계 ({@link CategoryPriceAggregation})
+ * 브랜드별 전체 카테고리 가격 집계 ({@link BrandCategoryPriceAggregation})
+ */
 @Component
 public class ProductPriceAggregator {
 
     /**
-     * 카테고리 별 최대 / 최소 가격 정보
+     * 카테고리 별 최대 / 최소 가격 정보 집계
      */
     public CategoryPriceAggregation aggregatePricesOfCategory(Collection<ProductPriceSummary> productPrices) {
         List<ProductPrice> minimumPricesPerCategory = onePricePerCategory(productPrices, PriceType.MINIMUM_PRICE);
@@ -26,7 +33,7 @@ public class ProductPriceAggregator {
     }
 
     /**
-     * 브랜드 별 모든 카테고리 최소 가격 정보
+     * 브랜드 별 모든 카테고리 최소 가격 정보 집계
      */
     public BrandCategoryPriceAggregation aggregateBrandCategoryMinimumPrices(Collection<ProductPriceSummary> productPrices) {
         Map<Long, List<ProductPriceSummary>> productPricesByBrandId = productPrices.stream()
