@@ -27,7 +27,7 @@ public class ProductReader {
         return productRepository.findAllProductPricesGroupByBrandAndCategory(category);
     }
 
-    public boolean exists(long brandId) {
+    public boolean existsByBrandId(long brandId) {
         Optional<Product> product = productRepository.findLatestByBrandId(brandId);
 
         return product.isPresent();

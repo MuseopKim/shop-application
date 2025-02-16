@@ -40,7 +40,7 @@ public class BrandService {
 
     @Transactional
     public boolean removeBrand(long brandId) {
-        if (productReader.exists(brandId)) {
+        if (productReader.existsByBrandId(brandId)) {
             throw new BrandException(ApiExceptionCode.BRAND_UNABLE_TO_REMOVE);
         }
 

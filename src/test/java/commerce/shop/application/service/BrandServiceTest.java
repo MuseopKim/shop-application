@@ -74,7 +74,7 @@ class BrandServiceTest {
         // given
         long brandId = 1L;
 
-        when(productReader.exists(brandId)).thenReturn(false);
+        when(productReader.existsByBrandId(brandId)).thenReturn(false);
         when(brandWriter.delete(brandId)).thenReturn(true);
 
         // when
@@ -90,7 +90,7 @@ class BrandServiceTest {
         // given
         long brandId = 1L;
 
-        when(productReader.exists(brandId)).thenReturn(true);
+        when(productReader.existsByBrandId(brandId)).thenReturn(true);
 
         // when / then
         thenThrownBy(() -> brandService.removeBrand(brandId))
