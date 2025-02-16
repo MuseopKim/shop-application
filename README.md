@@ -1,4 +1,4 @@
-## 상품 전시 시스템
+## 상품 가격 정보 시스템
 
 > 카테고리 / 브랜드 별 상품 및 가격 정보를 제공하는 시스템
 
@@ -70,13 +70,14 @@ CREATE TABLE product
     updated_at DATETIME     NOT NULL COMMENT '수정일'
 );
 
-CREATE INDEX `idx_product_category_price_brand` ON product (`category`, `brand_id`, `price`);
+CREATE INDEX `idx_product_category_brand_price` ON product (`category`, `brand_id`, `price`);
 CREATE INDEX `idx_product_brand_id` ON product (`brand_id`);
 ```
 
 ### 설계 고려사항
 
-- 카테고리, 브랜드 별 가격 조회가 빈번하게 발생할 것으로 예상하여 커버링 인덱스를 위한 복합 인덱스`(category, price, brand_id)` 구성
+- 카테고리, 브랜드 별 가격 조회가 빈번하게 발생할 것으로 예상하여 커버링 인덱스를 위한 복합 인덱스`(category, brand_id, price)` 구성
+
 ```sql
 -- 카테고리 / 브랜드 별 최저, 최고 가격 조회
 SELECT category,
@@ -112,6 +113,7 @@ GROUP BY category, brand_id;
  */
 
 ```
+
 - 브랜드 별 상품 조회를 위한 `brand_id` 인덱스 구성
 - 조회 성능을 고려하여 ETL, 배치 작업을 통해 별도의 `집계 테이블`(카테고리별 최저 / 최고가, 브랜드별 총액 등) 구성을 고려 하였으나,
   캐시 사용으로 대체
@@ -152,7 +154,7 @@ Implementation Layer
 ## 조회 성능 개선 전략
 
 - 요청마다 모든 상품 가격 집계가 필요한 고비용성을 고려하여 캐시 사용한 성능 최적화
-- 캐시는 별도 인프라 구성을 하지 않기 위해 Local Cache(`Caffeine Cache`)로 대체 
+- 캐시는 별도 인프라 구성을 하지 않기 위해 Local Cache(`Caffeine Cache`)로 대체
 - 고도화 시 Redis와 같은 글로벌 캐시 사용 고려
 
 ### Cache Eviction
@@ -161,9 +163,9 @@ Implementation Layer
 - Cache-Aside 패턴으로 다음 요청 시 새로운 데이터로 캐시 재생성
 - 실시간 무효화 실패 케이스 고려하여 기본 캐시 유지 기간(TTL) 적용
 
-### 이벤트 기반 관리
+### 이벤트 기반 Cache 데이터 관리
 
-- 이벤트 발행을 통한 느슨한 결합 구조
+- 상품 변경(등록 / 수정 / 삭제) 발생 시 이벤트 발행을 통한 느슨한 결합
 - 스프링이 제공하는 `ApplicationEventPublisher`, `EventListener` 활용
 - `@TransactionalEventListener` 적용하여 등록 / 수정 / 삭제 트랜잭션과 격리
 
@@ -204,51 +206,56 @@ curl -X GET http://localhost:8080/categories/minimum-prices \
    -H 'Accept: application/json'
 ```
 
-#### Response
+##### Response
 
 ```json
 {
   "code": "SUCCESS",
   "message": "성공",
   "payload": {
-    "minimumPrice": {
-      "brandName": "D",
-      "categories": [
-        {
-          "category": "CAP",
-          "price": 1500
-        },
-        {
-          "category": "TOP",
-          "price": 10100
-        },
-        {
-          "category": "SOCKS",
-          "price": 2400
-        },
-        {
-          "category": "ACCESSORIES",
-          "price": 2000
-        },
-        {
-          "category": "SNEAKERS",
-          "price": 9500
-        },
-        {
-          "category": "OUTER",
-          "price": 5100
-        },
-        {
-          "category": "PANTS",
-          "price": 3000
-        },
-        {
-          "category": "BAG",
-          "price": 2500
-        }
-      ],
-      "totalPrice": 36100
-    }
+    "prices": [
+      {
+        "category": "PANTS",
+        "brandName": "D",
+        "price": 3000
+      },
+      {
+        "category": "ACCESSORIES",
+        "brandName": "F",
+        "price": 1900
+      },
+      {
+        "category": "TOP",
+        "brandName": "C",
+        "price": 10000
+      },
+      {
+        "category": "SOCKS",
+        "brandName": "I",
+        "price": 1700
+      },
+      {
+        "category": "OUTER",
+        "brandName": "E",
+        "price": 5000
+      },
+      {
+        "category": "BAG",
+        "brandName": "A",
+        "price": 2000
+      },
+      {
+        "category": "CAP",
+        "brandName": "D",
+        "price": 1500
+      },
+      {
+        "category": "SNEAKERS",
+        "brandName": "A",
+        "price": 9000
+      }
+    ],
+    "totalPrice": 34100
   }
 }
 ```
@@ -262,7 +269,7 @@ curl -X GET http://localhost:8080/brands/minimum-total-price \
     -H 'Accept: application/json'
 ```
 
-#### Response
+##### Response
 
 ```json
 {
@@ -313,10 +320,14 @@ curl -X GET http://localhost:8080/brands/minimum-total-price \
 
 ### 3. 특정 카테고리 최저, 최고 가격 브랜드 및 가격 조회
 
+##### Request
+
 ```shell
 curl -X GET http://localhost:8080/categories/pants/price-ranges \
 -H 'Content-Type: application/json'
 ```
+
+##### Response
 
 ```json
 {
